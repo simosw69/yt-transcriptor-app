@@ -1,0 +1,3468 @@
+crea un app android, partendo da questo progetto. l'app sarà un youtube transcriptor: in orientamento verticale del dispositivo sarà possibile scorrere l'intera trascrizione del video. in orizzontale sarà possibile guardare il video (con un player interno) e affianco visualizzare i sottotitoli in tempo reale stile lyrics di spotify. il  tutto deve avere una formattazione che migliori la user experience.
+
+in java, usa questa chiamata api try {
+    String videoId = "8aGhZQkoFbQ";
+
+    URL url = new URL("https://youtube-transcriptor.p.rapidapi.com/transcript?video_id=" 
+            + videoId + "&lang=en");
+
+    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+    conn.setRequestMethod("GET");
+
+    conn.setRequestProperty("x-rapidapi-host", "youtube-transcriptor.p.rapidapi.com");
+    conn.setRequestProperty("x-rapidapi-key", "4fb6890f0fmshaea85cb0015d802p1fe421jsn9e7c20881791");
+    conn.setRequestProperty("Content-Type", "application/json");
+
+    int status = conn.getResponseCode();
+
+    InputStream inputStream = (status >= 200 && status < 300)
+            ? conn.getInputStream()
+            : conn.getErrorStream();
+
+    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "utf-8"));
+
+    StringBuilder response = new StringBuilder();
+    String line;
+
+    while ((line = reader.readLine()) != null) {
+        response.append(line.trim());
+    }
+
+    reader.close();
+
+    System.out.println("Status: " + status);
+    System.out.println("Response: " + response.toString());
+
+} catch (Exception e) {
+    e.printStackTrace();
+}
+
+
+crea un file env che contenga le informazioni sensibili come la api key.
+
+la chiamata api restituisce un json del genere:
+
+[
+  {
+    "title": "What the heck is the event loop anyway? | Philip Roberts | JSConf EU",
+    "description": "JavaScript programmers like to use words like, “event-loop”, “non-blocking”, “callback”, “asynchronous”, “single-threaded” and “concurrency”.\n\nWe say things like “don’t block the event loop”, “make sure your code runs at 60 frames-per-second”, “well of course, it won’t work, that function is an asynchronous callback!”\n\nIf you’re anything like me, you nod and agree, as if it’s all obvious, even though you don’t actually know what the words mean; and yet, finding good explanations of how JavaScript actually works isn’t all that easy, so let’s learn!\n\nWith some handy visualisations, and fun hacks, let’s get an intuitive understanding of what happens when JavaScript runs.\n\nTranscript: http://2014.jsconf.eu/speakers/philip-roberts-what-the-heck-is-the-event-loop-anyway.html\n\nLicense: For reuse of this video under a more permissive license please get in touch with us. The speakers retain the copyright for their performances.",
+    "availableLangs": [
+      "zh-CN",
+      "zh-Hant",
+      "en",
+      "fr",
+      "de",
+      "hi",
+      "id",
+      "it",
+      "ja",
+      "ko",
+      "pl",
+      "pt",
+      "pa",
+      "ru",
+      "es-ES",
+      "ta",
+      "th",
+      "tr",
+      "vi"
+    ],
+    "lengthInSeconds": "1612",
+    "thumbnails": [
+      {
+        "url": "https://i.ytimg.com/vi/8aGhZQkoFbQ/hqdefault.jpg?sqp=-oaymwEmCOADEOgC8quKqQMa8AEB-AH-CYAC0AWKAgwIABABGHIgRihqMA8=&rs=AOn4CLABwixVJ0IvCZ-zf_hBMFALLImy8Q",
+        "width": 480,
+        "height": 360
+      },
+      {
+        "url": "https://i.ytimg.com/vi/8aGhZQkoFbQ/sddefault.jpg?sqp=-oaymwEmCIAFEOAD8quKqQMa8AEB-AH-CYAC0AWKAgwIABABGHIgRihqMA8=&rs=AOn4CLBNf-dCujikR6sOD9rQJLIYZB4FbQ",
+        "width": 640,
+        "height": 480
+      }
+    ],
+    "transcription": [
+      {
+        "subtitle": "[Music]",
+        "start": 0.94,
+        "dur": 12.829
+      },
+      {
+        "subtitle": "hello everyone uh thanks for coming to",
+        "start": 17.359,
+        "dur": 3.961
+      },
+      {
+        "subtitle": "the Sidetrack it&#39;s awesome to see it",
+        "start": 19.6,
+        "dur": 3.839
+      },
+      {
+        "subtitle": "packed out in here can everyone give me",
+        "start": 21.32,
+        "dur": 3.76
+      },
+      {
+        "subtitle": "a",
+        "start": 23.439,
+        "dur": 4.481
+      },
+      {
+        "subtitle": "stretch that&#39;s good I need to stretch so",
+        "start": 25.08,
+        "dur": 5.48
+      },
+      {
+        "subtitle": "I look less weird okay",
+        "start": 27.92,
+        "dur": 5.6
+      },
+      {
+        "subtitle": "um so I want to talk about the event",
+        "start": 30.56,
+        "dur": 5.159
+      },
+      {
+        "subtitle": "Loop and what the heck is the event Loop",
+        "start": 33.52,
+        "dur": 4.96
+      },
+      {
+        "subtitle": "um as in the event Loop inside",
+        "start": 35.719,
+        "dur": 6.84
+      },
+      {
+        "subtitle": "JavaScript so first up um as he said uh",
+        "start": 38.48,
+        "dur": 5.759
+      },
+      {
+        "subtitle": "I work for andette which is an awesome",
+        "start": 42.559,
+        "dur": 4.081
+      },
+      {
+        "subtitle": "little Dev shop SL Product Company in",
+        "start": 44.239,
+        "dur": 5.16
+      },
+      {
+        "subtitle": "the US um look us up if you need help",
+        "start": 46.64,
+        "dur": 4.36
+      },
+      {
+        "subtitle": "with real time stuff that&#39;s what we&#39;re",
+        "start": 49.399,
+        "dur": 5.281
+      },
+      {
+        "subtitle": "good at so about 18 months",
+        "start": 51,
+        "dur": 7.28
+      },
+      {
+        "subtitle": "ago I&#39;m a paid professional JavaScript",
+        "start": 54.68,
+        "dur": 6.24
+      },
+      {
+        "subtitle": "developer I thought to myself how does",
+        "start": 58.28,
+        "dur": 6.239
+      },
+      {
+        "subtitle": "like JavaScript actually work and I",
+        "start": 60.92,
+        "dur": 6.559
+      },
+      {
+        "subtitle": "wasn&#39;t entirely sure I&#39;d heard V8 as a",
+        "start": 64.519,
+        "dur": 5.001
+      },
+      {
+        "subtitle": "term you know Chrome&#39;s runtime didn&#39;t",
+        "start": 67.479,
+        "dur": 3.481
+      },
+      {
+        "subtitle": "really know what that meant what that",
+        "start": 69.52,
+        "dur": 4.279
+      },
+      {
+        "subtitle": "did um I&#39;d heard things like",
+        "start": 70.96,
+        "dur": 4.44
+      },
+      {
+        "subtitle": "single-threaded you know obviously I&#39;m",
+        "start": 73.799,
+        "dur": 4.081
+      },
+      {
+        "subtitle": "using callbacks how do callbacks work so",
+        "start": 75.4,
+        "dur": 4.84
+      },
+      {
+        "subtitle": "I kind of started a journey of like",
+        "start": 77.88,
+        "dur": 4.72
+      },
+      {
+        "subtitle": "reading and research and experimenting",
+        "start": 80.24,
+        "dur": 4.96
+      },
+      {
+        "subtitle": "in the browser um which basically",
+        "start": 82.6,
+        "dur": 4.76
+      },
+      {
+        "subtitle": "started like this right I kind of was",
+        "start": 85.2,
+        "dur": 5.559
+      },
+      {
+        "subtitle": "like JavaScript what are you",
+        "start": 87.36,
+        "dur": 4.68
+      },
+      {
+        "subtitle": "and it&#39;s like I&#39;m a single threader non",
+        "start": 90.759,
+        "dur": 3.241
+      },
+      {
+        "subtitle": "blocking asynchronous in current",
+        "start": 92.04,
+        "dur": 6.24
+      },
+      {
+        "subtitle": "language right that&#39;s uh yeah cool I",
+        "start": 94,
+        "dur": 5.799
+      },
+      {
+        "subtitle": "have a c stack and event Loop a coack Q",
+        "start": 98.28,
+        "dur": 3.6
+      },
+      {
+        "subtitle": "and some other apis and",
+        "start": 99.799,
+        "dur": 4.481
+      },
+      {
+        "subtitle": "stuff right I did not do a computer",
+        "start": 101.88,
+        "dur": 4.64
+      },
+      {
+        "subtitle": "science degree I don&#39;t I mean these",
+        "start": 104.28,
+        "dur": 5
+      },
+      {
+        "subtitle": "words they&#39;re words so you know I heard",
+        "start": 106.52,
+        "dur": 4.639
+      },
+      {
+        "subtitle": "of like V8 and the various run times in",
+        "start": 109.28,
+        "dur": 4.32
+      },
+      {
+        "subtitle": "different browsers so I like looked to",
+        "start": 111.159,
+        "dur": 3.761
+      },
+      {
+        "subtitle": "V8 and said do you have a CO stack and",
+        "start": 113.6,
+        "dur": 2.76
+      },
+      {
+        "subtitle": "event leave a c q and some other apis",
+        "start": 114.92,
+        "dur": 4.28
+      },
+      {
+        "subtitle": "and stuff I have a coold stack in a heap",
+        "start": 116.36,
+        "dur": 5.52
+      },
+      {
+        "subtitle": "I don&#39;t know what those other things are",
+        "start": 119.2,
+        "dur": 4.519
+      },
+      {
+        "subtitle": "okay",
+        "start": 121.88,
+        "dur": 5.559
+      },
+      {
+        "subtitle": "interesting so basically 18 months pass",
+        "start": 123.719,
+        "dur": 6.24
+      },
+      {
+        "subtitle": "like we&#39;re 18 months later now and like",
+        "start": 127.439,
+        "dur": 6.88
+      },
+      {
+        "subtitle": "I think I think I get this um and so",
+        "start": 129.959,
+        "dur": 5.521
+      },
+      {
+        "subtitle": "this is what I want to share with you",
+        "start": 134.319,
+        "dur": 2.801
+      },
+      {
+        "subtitle": "today so hopefully this will be useful",
+        "start": 135.48,
+        "dur": 3.6
+      },
+      {
+        "subtitle": "if you&#39;re relatively new to JavaScript",
+        "start": 137.12,
+        "dur": 5.08
+      },
+      {
+        "subtitle": "um help you understand why JavaScript is",
+        "start": 139.08,
+        "dur": 4.56
+      },
+      {
+        "subtitle": "so weird when you compare it to other",
+        "start": 142.2,
+        "dur": 3.28
+      },
+      {
+        "subtitle": "languages you might have used um why",
+        "start": 143.64,
+        "dur": 3.84
+      },
+      {
+        "subtitle": "callbacks are a thing which calls us",
+        "start": 145.48,
+        "dur": 4.72
+      },
+      {
+        "subtitle": "hell but are required um and also if",
+        "start": 147.48,
+        "dur": 4.479
+      },
+      {
+        "subtitle": "you&#39;re not if you&#39;re an experienced",
+        "start": 150.2,
+        "dur": 3.08
+      },
+      {
+        "subtitle": "JavaScript developer hopefully give you",
+        "start": 151.959,
+        "dur": 3.56
+      },
+      {
+        "subtitle": "some kind of fresh insights into how the",
+        "start": 153.28,
+        "dur": 3.72
+      },
+      {
+        "subtitle": "runtime that you&#39;re using everyday works",
+        "start": 155.519,
+        "dur": 3.08
+      },
+      {
+        "subtitle": "so that you can kind of think about it",
+        "start": 157,
+        "dur": 2.8
+      },
+      {
+        "subtitle": "um a little",
+        "start": 158.599,
+        "dur": 4.881
+      },
+      {
+        "subtitle": "better so if we look at the JavaScript",
+        "start": 159.8,
+        "dur": 6.28
+      },
+      {
+        "subtitle": "runtime itself like V8 for example which",
+        "start": 163.48,
+        "dur": 5.759
+      },
+      {
+        "subtitle": "is the runtime inside Chrome um this is",
+        "start": 166.08,
+        "dur": 6.36
+      },
+      {
+        "subtitle": "what is uh this is a simplified view",
+        "start": 169.239,
+        "dur": 5.121
+      },
+      {
+        "subtitle": "really of what the JavaScript runtime is",
+        "start": 172.44,
+        "dur": 3.24
+      },
+      {
+        "subtitle": "it&#39;s a heap which is we don&#39;t need to",
+        "start": 174.36,
+        "dur": 2.239
+      },
+      {
+        "subtitle": "worry about that it&#39;s kind of boring",
+        "start": 175.68,
+        "dur": 2.479
+      },
+      {
+        "subtitle": "it&#39;s just like where memory allocation",
+        "start": 176.599,
+        "dur": 4.401
+      },
+      {
+        "subtitle": "happens um and then there&#39;s the co stack",
+        "start": 178.159,
+        "dur": 5.961
+      },
+      {
+        "subtitle": "um which is where your like um stack",
+        "start": 181,
+        "dur": 5.76
+      },
+      {
+        "subtitle": "frames are and all that kind of stuff",
+        "start": 184.12,
+        "dur": 6.88
+      },
+      {
+        "subtitle": "but if you like clone the V8 code base",
+        "start": 186.76,
+        "dur": 6.8
+      },
+      {
+        "subtitle": "and gret for things like set timeout or",
+        "start": 191,
+        "dur": 5.959
+      },
+      {
+        "subtitle": "Dom or XML HTP request they&#39;re not in",
+        "start": 193.56,
+        "dur": 6.12
+      },
+      {
+        "subtitle": "there they don&#39;t exist in V8 which was",
+        "start": 196.959,
+        "dur": 4.401
+      },
+      {
+        "subtitle": "kind of a surprise to me right like set",
+        "start": 199.68,
+        "dur": 2.76
+      },
+      {
+        "subtitle": "timeout is one of those like first",
+        "start": 201.36,
+        "dur": 2.36
+      },
+      {
+        "subtitle": "things you use in JavaScript when you",
+        "start": 202.44,
+        "dur": 2.879
+      },
+      {
+        "subtitle": "start thinking about async stuff and",
+        "start": 203.72,
+        "dur": 3.76
+      },
+      {
+        "subtitle": "it&#39;s not in the V8",
+        "start": 205.319,
+        "dur": 5.081
+      },
+      {
+        "subtitle": "Source hm interesting",
+        "start": 207.48,
+        "dur": 6.16
+      },
+      {
+        "subtitle": "so over this 18 months of Discovery I&#39;ve",
+        "start": 210.4,
+        "dur": 5.08
+      },
+      {
+        "subtitle": "come to realize that this is really this",
+        "start": 213.64,
+        "dur": 3.159
+      },
+      {
+        "subtitle": "is really the bigger picture and this is",
+        "start": 215.48,
+        "dur": 3.16
+      },
+      {
+        "subtitle": "what I&#39;m hoping to get you all kind of",
+        "start": 216.799,
+        "dur": 3.401
+      },
+      {
+        "subtitle": "on board with today and understand what",
+        "start": 218.64,
+        "dur": 3.56
+      },
+      {
+        "subtitle": "these pieces are so we have the V8",
+        "start": 220.2,
+        "dur": 3.399
+      },
+      {
+        "subtitle": "runtime but then we have these things",
+        "start": 222.2,
+        "dur": 4.239
+      },
+      {
+        "subtitle": "called Web apis which are um extra",
+        "start": 223.599,
+        "dur": 4.321
+      },
+      {
+        "subtitle": "things that the browser provides so the",
+        "start": 226.439,
+        "dur": 4.921
+      },
+      {
+        "subtitle": "Dom um Ajax set timeout things like that",
+        "start": 227.92,
+        "dur": 6
+      },
+      {
+        "subtitle": "then we have this mythical event Loop um",
+        "start": 231.36,
+        "dur": 4.76
+      },
+      {
+        "subtitle": "and the cat Q um I&#39;m sure you&#39;ve heard",
+        "start": 233.92,
+        "dur": 4.48
+      },
+      {
+        "subtitle": "some of these terms before um but maybe",
+        "start": 236.12,
+        "dur": 4.039
+      },
+      {
+        "subtitle": "don&#39;t quite understand how these pieces",
+        "start": 238.4,
+        "dur": 2.96
+      },
+      {
+        "subtitle": "like pull",
+        "start": 240.159,
+        "dur": 3.321
+      },
+      {
+        "subtitle": "together so I&#39;m going to start from the",
+        "start": 241.36,
+        "dur": 4.32
+      },
+      {
+        "subtitle": "beginning some of this will be new to or",
+        "start": 243.48,
+        "dur": 3.399
+      },
+      {
+        "subtitle": "you know the words might be new to",
+        "start": 245.68,
+        "dur": 2.88
+      },
+      {
+        "subtitle": "people other other people might get this",
+        "start": 246.879,
+        "dur": 3.161
+      },
+      {
+        "subtitle": "but we&#39;re going to quickly kind of move",
+        "start": 248.56,
+        "dur": 3.519
+      },
+      {
+        "subtitle": "on from here so so bear with me if this",
+        "start": 250.04,
+        "dur": 3.479
+      },
+      {
+        "subtitle": "is if this is obvious but I think for a",
+        "start": 252.079,
+        "dur": 4.921
+      },
+      {
+        "subtitle": "lot of people it&#39;s not so JavaScript is",
+        "start": 253.519,
+        "dur": 5.641
+      },
+      {
+        "subtitle": "a single threaded programing language",
+        "start": 257,
+        "dur": 4.16
+      },
+      {
+        "subtitle": "single threaded runtime which means it",
+        "start": 259.16,
+        "dur": 5.08
+      },
+      {
+        "subtitle": "has a single call stack and it can do",
+        "start": 261.16,
+        "dur": 4.96
+      },
+      {
+        "subtitle": "one thing at a time like that&#39;s what a",
+        "start": 264.24,
+        "dur": 3.64
+      },
+      {
+        "subtitle": "single thread means is like the program",
+        "start": 266.12,
+        "dur": 4.96
+      },
+      {
+        "subtitle": "can run one one piece of code at a time",
+        "start": 267.88,
+        "dur": 4.599
+      },
+      {
+        "subtitle": "so let&#39;s try and visualize that just to",
+        "start": 271.08,
+        "dur": 2.679
+      },
+      {
+        "subtitle": "kind of to get our heads around what",
+        "start": 272.479,
+        "dur": 3.521
+      },
+      {
+        "subtitle": "that means so if I have some code like",
+        "start": 273.759,
+        "dur": 5.361
+      },
+      {
+        "subtitle": "this on the on your left um we&#39;ve got a",
+        "start": 276,
+        "dur": 4.8
+      },
+      {
+        "subtitle": "few functions a function multiply which",
+        "start": 279.12,
+        "dur": 3.639
+      },
+      {
+        "subtitle": "multiplies two numbers square which",
+        "start": 280.8,
+        "dur": 3.8
+      },
+      {
+        "subtitle": "calls multiply with that you know the",
+        "start": 282.759,
+        "dur": 4
+      },
+      {
+        "subtitle": "same number twice um a function which",
+        "start": 284.6,
+        "dur": 4.56
+      },
+      {
+        "subtitle": "prints the square of a number by calling",
+        "start": 286.759,
+        "dur": 4.361
+      },
+      {
+        "subtitle": "square and then calling cons. log and",
+        "start": 289.16,
+        "dur": 3.479
+      },
+      {
+        "subtitle": "then at the bottom of our file we",
+        "start": 291.12,
+        "dur": 3.44
+      },
+      {
+        "subtitle": "actually run print square right this",
+        "start": 292.639,
+        "dur": 4.961
+      },
+      {
+        "subtitle": "code all good makees sense cool so if we",
+        "start": 294.56,
+        "dur": 5.56
+      },
+      {
+        "subtitle": "run this well",
+        "start": 297.6,
+        "dur": 4.319
+      },
+      {
+        "subtitle": "I should back up a step sorry so the",
+        "start": 300.12,
+        "dur": 4.519
+      },
+      {
+        "subtitle": "call stack is basically um it&#39;s a data",
+        "start": 301.919,
+        "dur": 4.481
+      },
+      {
+        "subtitle": "structure which records basically where",
+        "start": 304.639,
+        "dur": 3.961
+      },
+      {
+        "subtitle": "in the program we are so if we step into",
+        "start": 306.4,
+        "dur": 3.799
+      },
+      {
+        "subtitle": "a function we push something onto the",
+        "start": 308.6,
+        "dur": 3.76
+      },
+      {
+        "subtitle": "stack if we return from a function we",
+        "start": 310.199,
+        "dur": 3.601
+      },
+      {
+        "subtitle": "pop off the top of the stack that&#39;s all",
+        "start": 312.36,
+        "dur": 2.64
+      },
+      {
+        "subtitle": "the stack can do we push stuff on the",
+        "start": 313.8,
+        "dur": 3.88
+      },
+      {
+        "subtitle": "top pop off the top so if we run this",
+        "start": 315,
+        "dur": 4.36
+      },
+      {
+        "subtitle": "file well there&#39;s kind of a main",
+        "start": 317.68,
+        "dur": 4.16
+      },
+      {
+        "subtitle": "function right like the the file itself",
+        "start": 319.36,
+        "dur": 4.679
+      },
+      {
+        "subtitle": "so we push that onto the stack then we",
+        "start": 321.84,
+        "dur": 4.199
+      },
+      {
+        "subtitle": "have some function definitions they&#39;re",
+        "start": 324.039,
+        "dur": 3.521
+      },
+      {
+        "subtitle": "just like defining the state of the",
+        "start": 326.039,
+        "dur": 3.201
+      },
+      {
+        "subtitle": "world and then finally we get to print",
+        "start": 327.56,
+        "dur": 2.6
+      },
+      {
+        "subtitle": "Square",
+        "start": 329.24,
+        "dur": 3.04
+      },
+      {
+        "subtitle": "right so print square is a function call",
+        "start": 330.16,
+        "dur": 4.08
+      },
+      {
+        "subtitle": "so we push that onto the stack and",
+        "start": 332.28,
+        "dur": 3.039
+      },
+      {
+        "subtitle": "immediately inside print Square we&#39;re",
+        "start": 334.24,
+        "dur": 2.16
+      },
+      {
+        "subtitle": "going to call Square which we&#39;re going",
+        "start": 335.319,
+        "dur": 3.081
+      },
+      {
+        "subtitle": "to push onto the stack which calls",
+        "start": 336.4,
+        "dur": 3.96
+      },
+      {
+        "subtitle": "multiply and now we hit a return",
+        "start": 338.4,
+        "dur": 3.519
+      },
+      {
+        "subtitle": "statement right we&#39;ve we multiply a and",
+        "start": 340.36,
+        "dur": 4
+      },
+      {
+        "subtitle": "b and we return so I said when we return",
+        "start": 341.919,
+        "dur": 5.84
+      },
+      {
+        "subtitle": "we pop something off the stack so pop uh",
+        "start": 344.36,
+        "dur": 5.24
+      },
+      {
+        "subtitle": "multiply off the stack return into",
+        "start": 347.759,
+        "dur": 5.841
+      },
+      {
+        "subtitle": "square return into print Square console.",
+        "start": 349.6,
+        "dur": 6.439
+      },
+      {
+        "subtitle": "log uh print square is now there&#39;s no",
+        "start": 353.6,
+        "dur": 3.56
+      },
+      {
+        "subtitle": "return but it&#39;s implicit because we got",
+        "start": 356.039,
+        "dur": 2.921
+      },
+      {
+        "subtitle": "to the end of the function and we&#39;re",
+        "start": 357.16,
+        "dur": 3.84
+      },
+      {
+        "subtitle": "done right so that that is like a",
+        "start": 358.96,
+        "dur": 3.239
+      },
+      {
+        "subtitle": "visualization of the col stack does that",
+        "start": 361,
+        "dur": 5.919
+      },
+      {
+        "subtitle": "make sense yes well okay great so even",
+        "start": 362.199,
+        "dur": 6.801
+      },
+      {
+        "subtitle": "if you haven&#39;t really thought about or",
+        "start": 366.919,
+        "dur": 3.761
+      },
+      {
+        "subtitle": "visualized the col stack before you&#39;ve",
+        "start": 369,
+        "dur": 3.28
+      },
+      {
+        "subtitle": "undoubtedly come across it when you&#39;ve",
+        "start": 370.68,
+        "dur": 3.4
+      },
+      {
+        "subtitle": "been doing um certainly browser side",
+        "start": 372.28,
+        "dur": 4.319
+      },
+      {
+        "subtitle": "development um so if we have code like",
+        "start": 374.08,
+        "dur": 4.64
+      },
+      {
+        "subtitle": "this um a function B which calls bar",
+        "start": 376.599,
+        "dur": 4.481
+      },
+      {
+        "subtitle": "which calls Fu which throws an error",
+        "start": 378.72,
+        "dur": 4.16
+      },
+      {
+        "subtitle": "then if we run this in Chrome we see",
+        "start": 381.08,
+        "dur": 3.08
+      },
+      {
+        "subtitle": "something like this in the dev tools",
+        "start": 382.88,
+        "dur": 4.439
+      },
+      {
+        "subtitle": "right um uncore error oops and it prints",
+        "start": 384.16,
+        "dur": 4.8
+      },
+      {
+        "subtitle": "the stack Trace that is the stack Trace",
+        "start": 387.319,
+        "dur": 3.72
+      },
+      {
+        "subtitle": "right the of the stack when that error",
+        "start": 388.96,
+        "dur": 5.04
+      },
+      {
+        "subtitle": "happened so UNC error oops which was",
+        "start": 391.039,
+        "dur": 4.72
+      },
+      {
+        "subtitle": "called in Fu which was called by bar",
+        "start": 394,
+        "dur": 2.88
+      },
+      {
+        "subtitle": "which was called by B which was called",
+        "start": 395.759,
+        "dur": 2.801
+      },
+      {
+        "subtitle": "by this Anonymous function which is our",
+        "start": 396.88,
+        "dur": 2.879
+      },
+      {
+        "subtitle": "our main",
+        "start": 398.56,
+        "dur": 4.24
+      },
+      {
+        "subtitle": "right um equally if you&#39;ve heard the",
+        "start": 399.759,
+        "dur": 5.361
+      },
+      {
+        "subtitle": "term like blowing the stack then this is",
+        "start": 402.8,
+        "dur": 4.08
+      },
+      {
+        "subtitle": "an example of that right have a function",
+        "start": 405.12,
+        "dur": 3.519
+      },
+      {
+        "subtitle": "f which calls Fu so what&#39;s going to",
+        "start": 406.88,
+        "dur": 6.24
+      },
+      {
+        "subtitle": "happen well we run main we call Fu which",
+        "start": 408.639,
+        "dur": 10.24
+      },
+      {
+        "subtitle": "calls Foo which calls Fu which calls Foo",
+        "start": 413.12,
+        "dur": 8.96
+      },
+      {
+        "subtitle": "and ultimately Chrome says well H you",
+        "start": 418.879,
+        "dur": 4.921
+      },
+      {
+        "subtitle": "probably didn&#39;t mean to K Fu 16,000",
+        "start": 422.08,
+        "dur": 5.08
+      },
+      {
+        "subtitle": "times recursively so I&#39;ll just like kill",
+        "start": 423.8,
+        "dur": 4.92
+      },
+      {
+        "subtitle": "things for you and you can figure out",
+        "start": 427.16,
+        "dur": 4.439
+      },
+      {
+        "subtitle": "where your bug lies right so although I",
+        "start": 428.72,
+        "dur": 4.96
+      },
+      {
+        "subtitle": "may be representing a new kind of side",
+        "start": 431.599,
+        "dur": 3.761
+      },
+      {
+        "subtitle": "of the C stack you&#39;ve probably got some",
+        "start": 433.68,
+        "dur": 3.359
+      },
+      {
+        "subtitle": "sense of it um in your development",
+        "start": 435.36,
+        "dur": 3.119
+      },
+      {
+        "subtitle": "practice",
+        "start": 437.039,
+        "dur": 4.481
+      },
+      {
+        "subtitle": "already so the big question then H comes",
+        "start": 438.479,
+        "dur": 5.4
+      },
+      {
+        "subtitle": "is like what happens when things are",
+        "start": 441.52,
+        "dur": 5.28
+      },
+      {
+        "subtitle": "slow so we talk about blocking and",
+        "start": 443.879,
+        "dur": 6.201
+      },
+      {
+        "subtitle": "blocking um Behavior and blocking",
+        "start": 446.8,
+        "dur": 4.839
+      },
+      {
+        "subtitle": "there&#39;s no strict definition of what is",
+        "start": 450.08,
+        "dur": 4.119
+      },
+      {
+        "subtitle": "and isn&#39;t blocking really it&#39;s just code",
+        "start": 451.639,
+        "dur": 5.4
+      },
+      {
+        "subtitle": "that is slow right so console.log is not",
+        "start": 454.199,
+        "dur": 5.201
+      },
+      {
+        "subtitle": "very slow doing a while loop from 1 to",
+        "start": 457.039,
+        "dur": 4.72
+      },
+      {
+        "subtitle": "10 billion is kind of slow doing image",
+        "start": 459.4,
+        "dur": 3.96
+      },
+      {
+        "subtitle": "processing is slow Network requests are",
+        "start": 461.759,
+        "dur": 5.72
+      },
+      {
+        "subtitle": "slow um so things which are slow and on",
+        "start": 463.36,
+        "dur": 6.72
+      },
+      {
+        "subtitle": "that stack are what a blocking what",
+        "start": 467.479,
+        "dur": 3.44
+      },
+      {
+        "subtitle": "blocking",
+        "start": 470.08,
+        "dur": 3.839
+      },
+      {
+        "subtitle": "means so here&#39;s a little example so",
+        "start": 470.919,
+        "dur": 5.921
+      },
+      {
+        "subtitle": "let&#39;s say we have this is like a fake",
+        "start": 473.919,
+        "dur": 5.84
+      },
+      {
+        "subtitle": "fake bit of code um get syn synchronous",
+        "start": 476.84,
+        "dur": 6
+      },
+      {
+        "subtitle": "right like uh J queries like uh Ajax",
+        "start": 479.759,
+        "dur": 5.201
+      },
+      {
+        "subtitle": "request what would happen if those were",
+        "start": 482.84,
+        "dur": 3.52
+      },
+      {
+        "subtitle": "synchronous requests so forget what we",
+        "start": 484.96,
+        "dur": 4.32
+      },
+      {
+        "subtitle": "know about ASN cacks they&#39;re synchronous",
+        "start": 486.36,
+        "dur": 5.16
+      },
+      {
+        "subtitle": "so if we just go through it like we have",
+        "start": 489.28,
+        "dur": 5.84
+      },
+      {
+        "subtitle": "been we call get sync and then we wait",
+        "start": 491.52,
+        "dur": 6.44
+      },
+      {
+        "subtitle": "right cuz we&#39;re doing Network requests",
+        "start": 495.12,
+        "dur": 4.519
+      },
+      {
+        "subtitle": "networks relative to computers are very",
+        "start": 497.96,
+        "dur": 4.32
+      },
+      {
+        "subtitle": "very slow hopefully that Network request",
+        "start": 499.639,
+        "dur": 4.68
+      },
+      {
+        "subtitle": "completes we can move",
+        "start": 502.28,
+        "dur": 3.879
+      },
+      {
+        "subtitle": "on",
+        "start": 504.319,
+        "dur": 3.6
+      },
+      {
+        "subtitle": "wait move",
+        "start": 506.159,
+        "dur": 4.72
+      },
+      {
+        "subtitle": "on wait",
+        "start": 507.919,
+        "dur": 4.761
+      },
+      {
+        "subtitle": "and I mean this network request might",
+        "start": 510.879,
+        "dur": 3.001
+      },
+      {
+        "subtitle": "never finish",
+        "start": 512.68,
+        "dur": 5.239
+      },
+      {
+        "subtitle": "so yeah I guess I&#39;ll go home um finally",
+        "start": 513.88,
+        "dur": 5.639
+      },
+      {
+        "subtitle": "those three you know blocking behavior",
+        "start": 517.919,
+        "dur": 4.401
+      },
+      {
+        "subtitle": "is complete and we can clear the stack",
+        "start": 519.519,
+        "dur": 5.361
+      },
+      {
+        "subtitle": "right so in a programming language which",
+        "start": 522.32,
+        "dur": 4.6
+      },
+      {
+        "subtitle": "um is single-threaded um you&#39;re not",
+        "start": 524.88,
+        "dur": 5
+      },
+      {
+        "subtitle": "using threads like say Ruby like that&#39;s",
+        "start": 526.92,
+        "dur": 4.359
+      },
+      {
+        "subtitle": "what happens right we make a network",
+        "start": 529.88,
+        "dur": 3.24
+      },
+      {
+        "subtitle": "request we have to just wait till it&#39;s",
+        "start": 531.279,
+        "dur": 5.521
+      },
+      {
+        "subtitle": "done because we we have no way of um",
+        "start": 533.12,
+        "dur": 6.32
+      },
+      {
+        "subtitle": "handling that so why is this actually a",
+        "start": 536.8,
+        "dur": 5.32
+      },
+      {
+        "subtitle": "problem the problem is because we are",
+        "start": 539.44,
+        "dur": 8.399
+      },
+      {
+        "subtitle": "running code in browsers so let&#39;s uh why",
+        "start": 542.12,
+        "dur": 9.2
+      },
+      {
+        "subtitle": "can&#39;t I here we go okay so this is just",
+        "start": 547.839,
+        "dur": 5.921
+      },
+      {
+        "subtitle": "uh this is Chrome um this is the code I",
+        "start": 551.32,
+        "dur": 5.32
+      },
+      {
+        "subtitle": "just ran I browsers don&#39;t give us well",
+        "start": 553.76,
+        "dur": 4.24
+      },
+      {
+        "subtitle": "they do actually give us synchronous",
+        "start": 556.64,
+        "dur": 3.68
+      },
+      {
+        "subtitle": "Ajax requests but um I&#39;m actually just",
+        "start": 558,
+        "dur": 4
+      },
+      {
+        "subtitle": "faking this out with a big while loop",
+        "start": 560.32,
+        "dur": 3.36
+      },
+      {
+        "subtitle": "because while Loops are synchronous so I",
+        "start": 562,
+        "dur": 3.72
+      },
+      {
+        "subtitle": "basically while loop for like a second",
+        "start": 563.68,
+        "dur": 4.159
+      },
+      {
+        "subtitle": "or 5 seconds I think um before",
+        "start": 565.72,
+        "dur": 4.92
+      },
+      {
+        "subtitle": "continuing so if I open up the uh the",
+        "start": 567.839,
+        "dur": 6.721
+      },
+      {
+        "subtitle": "console here um we can see what happens",
+        "start": 570.64,
+        "dur": 7.56
+      },
+      {
+        "subtitle": "so we request f.com and like while this",
+        "start": 574.56,
+        "dur": 6.12
+      },
+      {
+        "subtitle": "is happening I can&#39;t do anything right",
+        "start": 578.2,
+        "dur": 4.4
+      },
+      {
+        "subtitle": "like even the Run button hasn&#39;t finished",
+        "start": 580.68,
+        "dur": 3.32
+      },
+      {
+        "subtitle": "rendering the fact that I previously",
+        "start": 582.6,
+        "dur": 2.919
+      },
+      {
+        "subtitle": "clicked it because the browser is",
+        "start": 584,
+        "dur": 5.48
+      },
+      {
+        "subtitle": "blocked it&#39;s stuck it can&#39;t do anything",
+        "start": 585.519,
+        "dur": 6.161
+      },
+      {
+        "subtitle": "until those requests complete and then",
+        "start": 589.48,
+        "dur": 3.919
+      },
+      {
+        "subtitle": "all hell breaks loose right cuz I did",
+        "start": 591.68,
+        "dur": 3.56
+      },
+      {
+        "subtitle": "some stuff and it figured out that I&#39;d",
+        "start": 593.399,
+        "dur": 4.68
+      },
+      {
+        "subtitle": "done it it just couldn&#39;t actually like",
+        "start": 595.24,
+        "dur": 5.12
+      },
+      {
+        "subtitle": "render it couldn&#39;t do anything and",
+        "start": 598.079,
+        "dur": 5.521
+      },
+      {
+        "subtitle": "that&#39;s because if that Co stack has",
+        "start": 600.36,
+        "dur": 5.64
+      },
+      {
+        "subtitle": "things on it and here it&#39;s got these um",
+        "start": 603.6,
+        "dur": 5.04
+      },
+      {
+        "subtitle": "yeah it&#39;s still going um we&#39;ve got the",
+        "start": 606,
+        "dur": 3.88
+      },
+      {
+        "subtitle": "synchronous request right we&#39;ve blocked",
+        "start": 608.64,
+        "dur": 2.879
+      },
+      {
+        "subtitle": "the col stack the browser can&#39;t do",
+        "start": 609.88,
+        "dur": 4.079
+      },
+      {
+        "subtitle": "anything else it can&#39;t render it can&#39;t",
+        "start": 611.519,
+        "dur": 5.88
+      },
+      {
+        "subtitle": "run any other code it&#39;s stuck not ideal",
+        "start": 613.959,
+        "dur": 4.721
+      },
+      {
+        "subtitle": "right if we want people to have nice",
+        "start": 617.399,
+        "dur": 3.401
+      },
+      {
+        "subtitle": "fluid uis we can&#39;t block the",
+        "start": 618.68,
+        "dur": 3.76
+      },
+      {
+        "subtitle": "stack",
+        "start": 620.8,
+        "dur": 3.96
+      },
+      {
+        "subtitle": "so so how do we handle this well the",
+        "start": 622.44,
+        "dur": 4.44
+      },
+      {
+        "subtitle": "simplest solution we&#39;re provided with is",
+        "start": 624.76,
+        "dur": 4.36
+      },
+      {
+        "subtitle": "asynchronous callbacks right so they&#39;re",
+        "start": 626.88,
+        "dur": 4.92
+      },
+      {
+        "subtitle": "almost no blocking",
+        "start": 629.12,
+        "dur": 5.68
+      },
+      {
+        "subtitle": "um uh functions in the browser equally",
+        "start": 631.8,
+        "dur": 4.64
+      },
+      {
+        "subtitle": "in node they&#39;re all made asynchronous",
+        "start": 634.8,
+        "dur": 4.12
+      },
+      {
+        "subtitle": "which basically means we run some code",
+        "start": 636.44,
+        "dur": 4.04
+      },
+      {
+        "subtitle": "give it a callback and we run that later",
+        "start": 638.92,
+        "dur": 3.4
+      },
+      {
+        "subtitle": "right we know what if you&#39;ve been",
+        "start": 640.48,
+        "dur": 3.039
+      },
+      {
+        "subtitle": "writing JavaScript you&#39;ve seen",
+        "start": 642.32,
+        "dur": 3.12
+      },
+      {
+        "subtitle": "asynchronous callbacks what does this",
+        "start": 643.519,
+        "dur": 5.32
+      },
+      {
+        "subtitle": "actually look like so simple example to",
+        "start": 645.44,
+        "dur": 5.76
+      },
+      {
+        "subtitle": "remind people just where we&#39;re at code",
+        "start": 648.839,
+        "dur": 5.601
+      },
+      {
+        "subtitle": "like this conso log high right we run",
+        "start": 651.2,
+        "dur": 6
+      },
+      {
+        "subtitle": "this at timeout but that cues the",
+        "start": 654.44,
+        "dur": 4.92
+      },
+      {
+        "subtitle": "console. log for the future somehow so",
+        "start": 657.2,
+        "dur": 4.12
+      },
+      {
+        "subtitle": "then we skip straight onto JS comp Vu",
+        "start": 659.36,
+        "dur": 4.52
+      },
+      {
+        "subtitle": "log that and then 5 seconds later we log",
+        "start": 661.32,
+        "dur": 5.959
+      },
+      {
+        "subtitle": "there right make sense happy basically",
+        "start": 663.88,
+        "dur": 5.24
+      },
+      {
+        "subtitle": "like that set time out is doing",
+        "start": 667.279,
+        "dur": 5.12
+      },
+      {
+        "subtitle": "something so asynchronous callbacks with",
+        "start": 669.12,
+        "dur": 5.48
+      },
+      {
+        "subtitle": "regards to the stack we saw before how",
+        "start": 672.399,
+        "dur": 5.401
+      },
+      {
+        "subtitle": "does this work so let&#39;s run the code",
+        "start": 674.6,
+        "dur": 7.2
+      },
+      {
+        "subtitle": "conso Lo High set timeout okay what&#39;s",
+        "start": 677.8,
+        "dur": 6.599
+      },
+      {
+        "subtitle": "going to happen here we know that conso",
+        "start": 681.8,
+        "dur": 4
+      },
+      {
+        "subtitle": "log there doesn&#39;t run immediately it&#39;s",
+        "start": 684.399,
+        "dur": 4.041
+      },
+      {
+        "subtitle": "going to run in 5 seconds time we can&#39;t",
+        "start": 685.8,
+        "dur": 5.76
+      },
+      {
+        "subtitle": "push that log onto the stack so somehow",
+        "start": 688.44,
+        "dur": 5.12
+      },
+      {
+        "subtitle": "it just disappears we we don&#39;t have like",
+        "start": 691.56,
+        "dur": 4.32
+      },
+      {
+        "subtitle": "a way of describing this yet but we&#39;ll",
+        "start": 693.56,
+        "dur": 6.64
+      },
+      {
+        "subtitle": "come to it we log JS comp foru clear and",
+        "start": 695.88,
+        "dur": 6.639
+      },
+      {
+        "subtitle": "then 5 seconds later somehow magically",
+        "start": 700.2,
+        "dur": 5.16
+      },
+      {
+        "subtitle": "cons there appears on the stack how does",
+        "start": 702.519,
+        "dur": 5.041
+      },
+      {
+        "subtitle": "that",
+        "start": 705.36,
+        "dur": 2.2
+      },
+      {
+        "subtitle": "happen and that&#39;s this is basically",
+        "start": 707.8,
+        "dur": 5.32
+      },
+      {
+        "subtitle": "where the event Loop comes in and",
+        "start": 710.16,
+        "dur": 6.239
+      },
+      {
+        "subtitle": "concurrency right so I&#39;ve been kind of",
+        "start": 713.12,
+        "dur": 4.76
+      },
+      {
+        "subtitle": "partially lying to you and telling you",
+        "start": 716.399,
+        "dur": 2.88
+      },
+      {
+        "subtitle": "that JavaScript can only do do one thing",
+        "start": 717.88,
+        "dur": 3.8
+      },
+      {
+        "subtitle": "at a time that is true JavaScript the",
+        "start": 719.279,
+        "dur": 4.281
+      },
+      {
+        "subtitle": "runtime can only do one thing at a time",
+        "start": 721.68,
+        "dur": 3.56
+      },
+      {
+        "subtitle": "it can&#39;t make an Ajax request while",
+        "start": 723.56,
+        "dur": 3.04
+      },
+      {
+        "subtitle": "you&#39;re doing other code it can&#39;t do a",
+        "start": 725.24,
+        "dur": 2.56
+      },
+      {
+        "subtitle": "set time out while you&#39;re doing other",
+        "start": 726.6,
+        "dur": 4.479
+      },
+      {
+        "subtitle": "code um the reason we can do things",
+        "start": 727.8,
+        "dur": 5.479
+      },
+      {
+        "subtitle": "concurrently is that the browser is more",
+        "start": 731.079,
+        "dur": 4.76
+      },
+      {
+        "subtitle": "than just the runtime so remember this",
+        "start": 733.279,
+        "dur": 4.68
+      },
+      {
+        "subtitle": "diagram the JavaScript runtime can do",
+        "start": 735.839,
+        "dur": 3.881
+      },
+      {
+        "subtitle": "one thing at a time but the browser",
+        "start": 737.959,
+        "dur": 3.32
+      },
+      {
+        "subtitle": "gives us these other things right it",
+        "start": 739.72,
+        "dur": 3.32
+      },
+      {
+        "subtitle": "gives us these web apis these are",
+        "start": 741.279,
+        "dur": 3.68
+      },
+      {
+        "subtitle": "effectively threads that you can&#39;t",
+        "start": 743.04,
+        "dur": 3.44
+      },
+      {
+        "subtitle": "access like threads you can just like",
+        "start": 744.959,
+        "dur": 4.68
+      },
+      {
+        "subtitle": "make calls to and those pieces of the",
+        "start": 746.48,
+        "dur": 5.2
+      },
+      {
+        "subtitle": "browser are where this concurrency kicks",
+        "start": 749.639,
+        "dur": 4.801
+      },
+      {
+        "subtitle": "in um if you&#39;re a backend person this",
+        "start": 751.68,
+        "dur": 4.36
+      },
+      {
+        "subtitle": "diagram looks basically identical for",
+        "start": 754.44,
+        "dur": 4.16
+      },
+      {
+        "subtitle": "node except instead of we web apis we",
+        "start": 756.04,
+        "dur": 4.96
+      },
+      {
+        "subtitle": "have C++ apis right and the the",
+        "start": 758.6,
+        "dur": 3.76
+      },
+      {
+        "subtitle": "threading and all that stuff is hidden",
+        "start": 761,
+        "dur": 5.399
+      },
+      {
+        "subtitle": "from you um by being run in like C++",
+        "start": 762.36,
+        "dur": 6.919
+      },
+      {
+        "subtitle": "land okay so now that we have this",
+        "start": 766.399,
+        "dur": 4.961
+      },
+      {
+        "subtitle": "picture let&#39;s see how this code runs in",
+        "start": 769.279,
+        "dur": 4.041
+      },
+      {
+        "subtitle": "this uh kind of more full picture of",
+        "start": 771.36,
+        "dur": 5.039
+      },
+      {
+        "subtitle": "what a browser looks like so same as",
+        "start": 773.32,
+        "dur": 6.12
+      },
+      {
+        "subtitle": "before run the code consult Al High Lo",
+        "start": 776.399,
+        "dur": 4.401
+      },
+      {
+        "subtitle": "to the console",
+        "start": 779.44,
+        "dur": 3.56
+      },
+      {
+        "subtitle": "simple now we can see what happens when",
+        "start": 780.8,
+        "dur": 4.56
+      },
+      {
+        "subtitle": "we call set timeout so when we call set",
+        "start": 783,
+        "dur": 4.8
+      },
+      {
+        "subtitle": "timeout we are we pass this callback",
+        "start": 785.36,
+        "dur": 5.64
+      },
+      {
+        "subtitle": "function and a delay to the set timeout",
+        "start": 787.8,
+        "dur": 5.719
+      },
+      {
+        "subtitle": "call Now set timeout is an API provided",
+        "start": 791,
+        "dur": 4.079
+      },
+      {
+        "subtitle": "to us by the browser remember I said it",
+        "start": 793.519,
+        "dur": 3.68
+      },
+      {
+        "subtitle": "doesn&#39;t live like in the V8 Source it&#39;s",
+        "start": 795.079,
+        "dur": 3.56
+      },
+      {
+        "subtitle": "like extra stuff we get in the",
+        "start": 797.199,
+        "dur": 2.76
+      },
+      {
+        "subtitle": "environment that we&#39;re running the",
+        "start": 798.639,
+        "dur": 2.601
+      },
+      {
+        "subtitle": "JavaScript runtime",
+        "start": 799.959,
+        "dur": 3.961
+      },
+      {
+        "subtitle": "in so effectively we kick off a timer",
+        "start": 801.24,
+        "dur": 4.599
+      },
+      {
+        "subtitle": "right in like the browser kicks off a",
+        "start": 803.92,
+        "dur": 4.2
+      },
+      {
+        "subtitle": "timer for you um and now it&#39;s going to",
+        "start": 805.839,
+        "dur": 4.12
+      },
+      {
+        "subtitle": "handle going to handle the countdown for",
+        "start": 808.12,
+        "dur": 4.56
+      },
+      {
+        "subtitle": "you right so that means that our set",
+        "start": 809.959,
+        "dur": 4.841
+      },
+      {
+        "subtitle": "timeout call itself is now complete so",
+        "start": 812.68,
+        "dur": 6.08
+      },
+      {
+        "subtitle": "we can pop off the stack JS comp for you",
+        "start": 814.8,
+        "dur": 8.479
+      },
+      {
+        "subtitle": "clear so now we&#39;ve got this um timer in",
+        "start": 818.76,
+        "dur": 6.759
+      },
+      {
+        "subtitle": "the web API which 5 seconds later is",
+        "start": 823.279,
+        "dur": 3.401
+      },
+      {
+        "subtitle": "going to",
+        "start": 825.519,
+        "dur": 4.161
+      },
+      {
+        "subtitle": "complete now the web API can&#39;t just like",
+        "start": 826.68,
+        "dur": 4.719
+      },
+      {
+        "subtitle": "start modifying your code right it can&#39;t",
+        "start": 829.68,
+        "dur": 3.159
+      },
+      {
+        "subtitle": "just like Chuck stuck onto the stack",
+        "start": 831.399,
+        "dur": 2.921
+      },
+      {
+        "subtitle": "when it&#39;s ready because if it did it",
+        "start": 832.839,
+        "dur": 3.081
+      },
+      {
+        "subtitle": "would like just appear randomly in the",
+        "start": 834.32,
+        "dur": 4.56
+      },
+      {
+        "subtitle": "middle of your code um so this is where",
+        "start": 835.92,
+        "dur": 5.64
+      },
+      {
+        "subtitle": "the task Q or the Callback Q kicks in so",
+        "start": 838.88,
+        "dur": 3.959
+      },
+      {
+        "subtitle": "basically any of the web apis when",
+        "start": 841.56,
+        "dur": 4.079
+      },
+      {
+        "subtitle": "they&#39;re done they push your callback",
+        "start": 842.839,
+        "dur": 5.721
+      },
+      {
+        "subtitle": "onto the task q and finally we get to",
+        "start": 845.639,
+        "dur": 5.401
+      },
+      {
+        "subtitle": "the event Loop um the title of the talk",
+        "start": 848.56,
+        "dur": 3.959
+      },
+      {
+        "subtitle": "is what the heck is the event Loop the",
+        "start": 851.04,
+        "dur": 3.4
+      },
+      {
+        "subtitle": "event Loop is like the simplest little",
+        "start": 852.519,
+        "dur": 4.921
+      },
+      {
+        "subtitle": "piece in this whole equation um and it",
+        "start": 854.44,
+        "dur": 5.56
+      },
+      {
+        "subtitle": "has one very simple job the event Loop&#39;s",
+        "start": 857.44,
+        "dur": 4
+      },
+      {
+        "subtitle": "job is to look at the stack and look at",
+        "start": 860,
+        "dur": 4.199
+      },
+      {
+        "subtitle": "the task Q if the stack is empty it",
+        "start": 861.44,
+        "dur": 4.28
+      },
+      {
+        "subtitle": "takes the first thing on the Queue and",
+        "start": 864.199,
+        "dur": 3.2
+      },
+      {
+        "subtitle": "pushes onto the stack which effectively",
+        "start": 865.72,
+        "dur": 4.96
+      },
+      {
+        "subtitle": "runs it right so here we can see that",
+        "start": 867.399,
+        "dur": 5.56
+      },
+      {
+        "subtitle": "now the stack is clear there&#39;s a call",
+        "start": 870.68,
+        "dur": 3.64
+      },
+      {
+        "subtitle": "back on the task Q so the event loot",
+        "start": 872.959,
+        "dur": 3.521
+      },
+      {
+        "subtitle": "runs and says oh I get to do something",
+        "start": 874.32,
+        "dur": 5.12
+      },
+      {
+        "subtitle": "here pushes the Callback back onto the",
+        "start": 876.48,
+        "dur": 4.32
+      },
+      {
+        "subtitle": "stack now remember the stack is like",
+        "start": 879.44,
+        "dur": 2.759
+      },
+      {
+        "subtitle": "JavaScript land right this is back",
+        "start": 880.8,
+        "dur": 4.599
+      },
+      {
+        "subtitle": "inside V8 so the Callback appears on the",
+        "start": 882.199,
+        "dur": 6.88
+      },
+      {
+        "subtitle": "stack and gets run conso theog there and",
+        "start": 885.399,
+        "dur": 4.401
+      },
+      {
+        "subtitle": "we&#39;re",
+        "start": 889.079,
+        "dur": 3.44
+      },
+      {
+        "subtitle": "done does that make sense everyone with",
+        "start": 889.8,
+        "dur": 7.68
+      },
+      {
+        "subtitle": "me awesome okay so now we can see um how",
+        "start": 892.519,
+        "dur": 6.521
+      },
+      {
+        "subtitle": "this works with probably one one of the",
+        "start": 897.48,
+        "dur": 3.4
+      },
+      {
+        "subtitle": "first um encounters you would have had",
+        "start": 899.04,
+        "dur": 4.12
+      },
+      {
+        "subtitle": "with async stuff which is when for some",
+        "start": 900.88,
+        "dur": 3.759
+      },
+      {
+        "subtitle": "weird reason someone says oh you have to",
+        "start": 903.16,
+        "dur": 5.84
+      },
+      {
+        "subtitle": "call set time out zero like okay you",
+        "start": 904.639,
+        "dur": 6.681
+      },
+      {
+        "subtitle": "want me to run the function in zero time",
+        "start": 909,
+        "dur": 3.839
+      },
+      {
+        "subtitle": "why would I wrap it in a set timeout",
+        "start": 911.32,
+        "dur": 3.079
+      },
+      {
+        "subtitle": "like the first time you come across this",
+        "start": 912.839,
+        "dur": 2.721
+      },
+      {
+        "subtitle": "you you&#39;re anything like me you&#39;re like",
+        "start": 914.399,
+        "dur": 2.481
+      },
+      {
+        "subtitle": "okay well I sort of see this it&#39;s doing",
+        "start": 915.56,
+        "dur": 4.48
+      },
+      {
+        "subtitle": "something but I don&#39;t really know why um",
+        "start": 916.88,
+        "dur": 5.16
+      },
+      {
+        "subtitle": "and the reason is generally if you&#39;re",
+        "start": 920.04,
+        "dur": 3.44
+      },
+      {
+        "subtitle": "trying to defer something until the",
+        "start": 922.04,
+        "dur": 4.52
+      },
+      {
+        "subtitle": "stack is clear right so we know looking",
+        "start": 923.48,
+        "dur": 4.719
+      },
+      {
+        "subtitle": "at this um if you&#39;ve written JavaScript",
+        "start": 926.56,
+        "dur": 2.839
+      },
+      {
+        "subtitle": "that we&#39;re just to see the same result",
+        "start": 928.199,
+        "dur": 2.481
+      },
+      {
+        "subtitle": "we&#39;re going to see high we&#39;re going to",
+        "start": 929.399,
+        "dur": 3.201
+      },
+      {
+        "subtitle": "see JS comp foru and then there is going",
+        "start": 930.68,
+        "dur": 4.56
+      },
+      {
+        "subtitle": "to somehow appear at the end so running",
+        "start": 932.6,
+        "dur": 5.56
+      },
+      {
+        "subtitle": "it we can see how that happens uh Conant",
+        "start": 935.24,
+        "dur": 5.079
+      },
+      {
+        "subtitle": "log High set time out zero now that&#39;s",
+        "start": 938.16,
+        "dur": 3.479
+      },
+      {
+        "subtitle": "going to complete immediately and push",
+        "start": 940.319,
+        "dur": 3.681
+      },
+      {
+        "subtitle": "the call back onto the Q but remember",
+        "start": 941.639,
+        "dur": 3.76
+      },
+      {
+        "subtitle": "what I said about the event Loop it has",
+        "start": 944,
+        "dur": 3.399
+      },
+      {
+        "subtitle": "to wait until the stack is clear before",
+        "start": 945.399,
+        "dur": 4.68
+      },
+      {
+        "subtitle": "it can push the call back onto the stack",
+        "start": 947.399,
+        "dur": 3.961
+      },
+      {
+        "subtitle": "so your stack is going to continue to",
+        "start": 950.079,
+        "dur": 2.401
+      },
+      {
+        "subtitle": "run right your main file is going to",
+        "start": 951.36,
+        "dur": 4.44
+      },
+      {
+        "subtitle": "continue to run uh con JS comp for you",
+        "start": 952.48,
+        "dur": 5.159
+      },
+      {
+        "subtitle": "and clear now that we&#39;re clear the event",
+        "start": 955.8,
+        "dur": 4.88
+      },
+      {
+        "subtitle": "Loop can kick in run your call back so",
+        "start": 957.639,
+        "dur": 5.56
+      },
+      {
+        "subtitle": "that&#39;s um like an example of set time",
+        "start": 960.68,
+        "dur": 5.159
+      },
+      {
+        "subtitle": "out zero is like pushing deferring that",
+        "start": 963.199,
+        "dur": 5.801
+      },
+      {
+        "subtitle": "execution of code for whatever reason um",
+        "start": 965.839,
+        "dur": 5.44
+      },
+      {
+        "subtitle": "to the end of the stack or until the",
+        "start": 969,
+        "dur": 5
+      },
+      {
+        "subtitle": "stack is clear",
+        "start": 971.279,
+        "dur": 5.961
+      },
+      {
+        "subtitle": "um okay so all these web apis work the",
+        "start": 974,
+        "dur": 5.519
+      },
+      {
+        "subtitle": "same way right if we have um Ajax",
+        "start": 977.24,
+        "dur": 4.24
+      },
+      {
+        "subtitle": "requests we make an Ajax request to a",
+        "start": 979.519,
+        "dur": 4.68
+      },
+      {
+        "subtitle": "URL with a callback just works the same",
+        "start": 981.48,
+        "dur": 7.4
+      },
+      {
+        "subtitle": "way uh oops sorry Conant log High Mak ax",
+        "start": 984.199,
+        "dur": 6.64
+      },
+      {
+        "subtitle": "request the code for running that Ajax",
+        "start": 988.88,
+        "dur": 3.28
+      },
+      {
+        "subtitle": "request does not live in the JavaScript",
+        "start": 990.839,
+        "dur": 2.841
+      },
+      {
+        "subtitle": "runtime it lives in the browser as a web",
+        "start": 992.16,
+        "dur": 5.4
+      },
+      {
+        "subtitle": "API so we spin up a xhr web API with a",
+        "start": 993.68,
+        "dur": 5.04
+      },
+      {
+        "subtitle": "callback in the",
+        "start": 997.56,
+        "dur": 4.56
+      },
+      {
+        "subtitle": "URL your code can continue to run until",
+        "start": 998.72,
+        "dur": 5.479
+      },
+      {
+        "subtitle": "that xhr request completes or doesn&#39;t",
+        "start": 1002.12,
+        "dur": 3.36
+      },
+      {
+        "subtitle": "complete it may never complete but",
+        "start": 1004.199,
+        "dur": 3.361
+      },
+      {
+        "subtitle": "that&#39;s okay your stat can continue to",
+        "start": 1005.48,
+        "dur": 4.4
+      },
+      {
+        "subtitle": "run assuming it does complete callback",
+        "start": 1007.56,
+        "dur": 4
+      },
+      {
+        "subtitle": "gets pushed onto the queue picked up by",
+        "start": 1009.88,
+        "dur": 3.68
+      },
+      {
+        "subtitle": "the event Loop and it&#39;s",
+        "start": 1011.56,
+        "dur": 5.12
+      },
+      {
+        "subtitle": "run right that&#39;s all that happens when",
+        "start": 1013.56,
+        "dur": 5.519
+      },
+      {
+        "subtitle": "an async call happens",
+        "start": 1016.68,
+        "dur": 3.959
+      },
+      {
+        "subtitle": "okay so let&#39;s do a crazy complicated",
+        "start": 1019.079,
+        "dur": 4.281
+      },
+      {
+        "subtitle": "example so I hope this is going to work",
+        "start": 1020.639,
+        "dur": 5.081
+      },
+      {
+        "subtitle": "um if you hadn&#39;t kind of realized like",
+        "start": 1023.36,
+        "dur": 4.199
+      },
+      {
+        "subtitle": "all this is all in keynote um there&#39;s",
+        "start": 1025.72,
+        "dur": 3.76
+      },
+      {
+        "subtitle": "like I don&#39;t know how like 500 animation",
+        "start": 1027.559,
+        "dur": 3.48
+      },
+      {
+        "subtitle": "steps in this whole deck so hopefully",
+        "start": 1029.48,
+        "dur": 3.88
+      },
+      {
+        "subtitle": "that oh",
+        "start": 1031.039,
+        "dur": 5.321
+      },
+      {
+        "subtitle": "huh",
+        "start": 1033.36,
+        "dur": 3
+      },
+      {
+        "subtitle": "[Music]",
+        "start": 1043.21,
+        "dur": 7.19
+      },
+      {
+        "subtitle": "oh",
+        "start": 1047.4,
+        "dur": 3
+      },
+      {
+        "subtitle": "so interesting we were given a",
+        "start": 1053.2,
+        "dur": 5.359
+      },
+      {
+        "subtitle": "link",
+        "start": 1056.76,
+        "dur": 5.919
+      },
+      {
+        "subtitle": "H is this big enough can people see okay",
+        "start": 1058.559,
+        "dur": 7.12
+      },
+      {
+        "subtitle": "so basically I wrote this talk um for",
+        "start": 1062.679,
+        "dur": 5.24
+      },
+      {
+        "subtitle": "scotton JS earlier in the year and I did",
+        "start": 1065.679,
+        "dur": 4.801
+      },
+      {
+        "subtitle": "it there and then after the talk I broke",
+        "start": 1067.919,
+        "dur": 4.961
+      },
+      {
+        "subtitle": "half of the slides um and could not be",
+        "start": 1070.48,
+        "dur": 4.76
+      },
+      {
+        "subtitle": "bothered to redo all the slides cuz it",
+        "start": 1072.88,
+        "dur": 4.32
+      },
+      {
+        "subtitle": "was a total pain in the ass and keynote",
+        "start": 1075.24,
+        "dur": 4.2
+      },
+      {
+        "subtitle": "to do it so in instead I took the much",
+        "start": 1077.2,
+        "dur": 4.719
+      },
+      {
+        "subtitle": "easier",
+        "start": 1079.44,
+        "dur": 2.479
+      },
+      {
+        "subtitle": "route um of writing a tool which can",
+        "start": 1081.96,
+        "dur": 6.64
+      },
+      {
+        "subtitle": "visualize the JavaScript runtime at",
+        "start": 1085.2,
+        "dur": 7.479
+      },
+      {
+        "subtitle": "runtime and it&#39;s called Loop so let&#39;s",
+        "start": 1088.6,
+        "dur": 6.72
+      },
+      {
+        "subtitle": "just run this example and uh which was",
+        "start": 1092.679,
+        "dur": 3.88
+      },
+      {
+        "subtitle": "kind of the example we had on the",
+        "start": 1095.32,
+        "dur": 5.08
+      },
+      {
+        "subtitle": "previous slide I haven&#39;t shimmed um xhr",
+        "start": 1096.559,
+        "dur": 5.721
+      },
+      {
+        "subtitle": "yet it&#39;s doable I just haven&#39;t done it",
+        "start": 1100.4,
+        "dur": 3.92
+      },
+      {
+        "subtitle": "so as you can see the code we&#39;re going",
+        "start": 1102.28,
+        "dur": 4.32
+      },
+      {
+        "subtitle": "to log something uh this is a simple",
+        "start": 1104.32,
+        "dur": 6.16
+      },
+      {
+        "subtitle": "shim around like uh do ad event listener",
+        "start": 1106.6,
+        "dur": 5.92
+      },
+      {
+        "subtitle": "um set timeout and we&#39;re going to do a",
+        "start": 1110.48,
+        "dur": 3.96
+      },
+      {
+        "subtitle": "console. log so I&#39;m just going to run it",
+        "start": 1112.52,
+        "dur": 3.48
+      },
+      {
+        "subtitle": "and see what happens",
+        "start": 1114.44,
+        "dur": 5.359
+      },
+      {
+        "subtitle": "so uh add a Dom API add a timeout",
+        "start": 1116,
+        "dur": 5.52
+      },
+      {
+        "subtitle": "timeout is going to count down code&#39;s",
+        "start": 1119.799,
+        "dur": 4.36
+      },
+      {
+        "subtitle": "going to continue to run pushes the call",
+        "start": 1121.52,
+        "dur": 4.08
+      },
+      {
+        "subtitle": "back into the queue which runs which",
+        "start": 1124.159,
+        "dur": 4.961
+      },
+      {
+        "subtitle": "runs the console. log and we&#39;re done um",
+        "start": 1125.6,
+        "dur": 6.4
+      },
+      {
+        "subtitle": "if I click on here then it&#39;s going to um",
+        "start": 1129.12,
+        "dur": 5.36
+      },
+      {
+        "subtitle": "trigger the web API cu the call back for",
+        "start": 1132,
+        "dur": 4.799
+      },
+      {
+        "subtitle": "the click and run it if I click 100",
+        "start": 1134.48,
+        "dur": 4.72
+      },
+      {
+        "subtitle": "times we can see what happen happens",
+        "start": 1136.799,
+        "dur": 5.36
+      },
+      {
+        "subtitle": "right I clicked The Click doesn&#39;t get",
+        "start": 1139.2,
+        "dur": 4.52
+      },
+      {
+        "subtitle": "processed immediately The Click gets",
+        "start": 1142.159,
+        "dur": 3.721
+      },
+      {
+        "subtitle": "pushed onto the que and as the que gets",
+        "start": 1143.72,
+        "dur": 4.48
+      },
+      {
+        "subtitle": "processed eventually my click is going",
+        "start": 1145.88,
+        "dur": 5.039
+      },
+      {
+        "subtitle": "to going to get dealt with",
+        "start": 1148.2,
+        "dur": 5.04
+      },
+      {
+        "subtitle": "right um so I have a few more examples I",
+        "start": 1150.919,
+        "dur": 7.281
+      },
+      {
+        "subtitle": "want to run run through here uh except I",
+        "start": 1153.24,
+        "dur": 6.2
+      },
+      {
+        "subtitle": "don&#39;t know how to see",
+        "start": 1158.2,
+        "dur": 4.959
+      },
+      {
+        "subtitle": "tubs so let&#39;s just see if I can find it",
+        "start": 1159.44,
+        "dur": 7.16
+      },
+      {
+        "subtitle": "here we go okay so I&#39;m just going to run",
+        "start": 1163.159,
+        "dur": 5.921
+      },
+      {
+        "subtitle": "through a few examples just to kind of",
+        "start": 1166.6,
+        "dur": 3.959
+      },
+      {
+        "subtitle": "talk about a few things that you might",
+        "start": 1169.08,
+        "dur": 2.88
+      },
+      {
+        "subtitle": "have run into and not kind of thought",
+        "start": 1170.559,
+        "dur": 4.12
+      },
+      {
+        "subtitle": "about with async um apis so in this",
+        "start": 1171.96,
+        "dur": 5.44
+      },
+      {
+        "subtitle": "example we call set time out four times",
+        "start": 1174.679,
+        "dur": 6.24
+      },
+      {
+        "subtitle": "um with a 1C delay and run console. log",
+        "start": 1177.4,
+        "dur": 7
+      },
+      {
+        "subtitle": "high so if we run it we can see that we",
+        "start": 1180.919,
+        "dur": 5.961
+      },
+      {
+        "subtitle": "uh run a few timeouts but the timeout",
+        "start": 1184.4,
+        "dur": 5.159
+      },
+      {
+        "subtitle": "callbacks get cued right so that that",
+        "start": 1186.88,
+        "dur": 5.84
+      },
+      {
+        "subtitle": "fourth callback we asked for a 1C delay",
+        "start": 1189.559,
+        "dur": 4.801
+      },
+      {
+        "subtitle": "and it&#39;s still waiting the Callback",
+        "start": 1192.72,
+        "dur": 4.8
+      },
+      {
+        "subtitle": "hasn&#39;t run right so this kind of",
+        "start": 1194.36,
+        "dur": 5.72
+      },
+      {
+        "subtitle": "illustrates the the like what set",
+        "start": 1197.52,
+        "dur": 4.159
+      },
+      {
+        "subtitle": "timeout is actually doing set timeout is",
+        "start": 1200.08,
+        "dur": 3.719
+      },
+      {
+        "subtitle": "not a guaranteed time to execution it&#39;s",
+        "start": 1201.679,
+        "dur": 4.12
+      },
+      {
+        "subtitle": "a minimum time to execution just like",
+        "start": 1203.799,
+        "dur": 3.401
+      },
+      {
+        "subtitle": "set timeout zero doesn&#39;t run the code",
+        "start": 1205.799,
+        "dur": 4.88
+      },
+      {
+        "subtitle": "immediately it runs the code next is",
+        "start": 1207.2,
+        "dur": 6.04
+      },
+      {
+        "subtitle": "sometime",
+        "start": 1210.679,
+        "dur": 4.601
+      },
+      {
+        "subtitle": "right",
+        "start": 1213.24,
+        "dur": 5.12
+      },
+      {
+        "subtitle": "um so in this example I want to talk",
+        "start": 1215.28,
+        "dur": 8
+      },
+      {
+        "subtitle": "about um callbacks so depending on who",
+        "start": 1218.36,
+        "dur": 7.12
+      },
+      {
+        "subtitle": "you speak to um and how they phrase",
+        "start": 1223.28,
+        "dur": 4.279
+      },
+      {
+        "subtitle": "things um callbacks can be one of two",
+        "start": 1225.48,
+        "dur": 4.12
+      },
+      {
+        "subtitle": "things callbacks can be any function",
+        "start": 1227.559,
+        "dur": 4.401
+      },
+      {
+        "subtitle": "that another function calls or callbacks",
+        "start": 1229.6,
+        "dur": 4.52
+      },
+      {
+        "subtitle": "can be more explicitly an asynchronous",
+        "start": 1231.96,
+        "dur": 4.32
+      },
+      {
+        "subtitle": "callback as in one that is going to get",
+        "start": 1234.12,
+        "dur": 3.919
+      },
+      {
+        "subtitle": "pushed onto the Callback Q at some point",
+        "start": 1236.28,
+        "dur": 4
+      },
+      {
+        "subtitle": "in the future so this little bit code",
+        "start": 1238.039,
+        "dur": 4.841
+      },
+      {
+        "subtitle": "illustrates the difference right the for",
+        "start": 1240.28,
+        "dur": 5.6
+      },
+      {
+        "subtitle": "each um method on an array it doesn&#39;t",
+        "start": 1242.88,
+        "dur": 5.44
+      },
+      {
+        "subtitle": "run it takes a function which you could",
+        "start": 1245.88,
+        "dur": 4.48
+      },
+      {
+        "subtitle": "call a callback but it&#39;s not running it",
+        "start": 1248.32,
+        "dur": 4.04
+      },
+      {
+        "subtitle": "asynchronously right it&#39;s running it",
+        "start": 1250.36,
+        "dur": 3.72
+      },
+      {
+        "subtitle": "within the current",
+        "start": 1252.36,
+        "dur": 4.439
+      },
+      {
+        "subtitle": "stack um we could Define an asynchronous",
+        "start": 1254.08,
+        "dur": 5.68
+      },
+      {
+        "subtitle": "for each so so we could uh it it&#39;s going",
+        "start": 1256.799,
+        "dur": 5.041
+      },
+      {
+        "subtitle": "to take an array and a callback and then",
+        "start": 1259.76,
+        "dur": 3.72
+      },
+      {
+        "subtitle": "for each item in the array it&#39;s going to",
+        "start": 1261.84,
+        "dur": 3.76
+      },
+      {
+        "subtitle": "do a set time out zero with that",
+        "start": 1263.48,
+        "dur": 4.48
+      },
+      {
+        "subtitle": "callback right I guess this should",
+        "start": 1265.6,
+        "dur": 4.92
+      },
+      {
+        "subtitle": "actually pass in the value but",
+        "start": 1267.96,
+        "dur": 5
+      },
+      {
+        "subtitle": "anyway so I&#39;m going to run it and we can",
+        "start": 1270.52,
+        "dur": 4.6
+      },
+      {
+        "subtitle": "see what the difference is so for the",
+        "start": 1272.96,
+        "dur": 4.68
+      },
+      {
+        "subtitle": "first block of code that runs it&#39;s going",
+        "start": 1275.12,
+        "dur": 5.039
+      },
+      {
+        "subtitle": "to sit and block the stack",
+        "start": 1277.64,
+        "dur": 5.399
+      },
+      {
+        "subtitle": "right until it&#39;s complete whereas in the",
+        "start": 1280.159,
+        "dur": 5.64
+      },
+      {
+        "subtitle": "async version okay it&#39;s it&#39;s slowed down",
+        "start": 1283.039,
+        "dur": 4
+      },
+      {
+        "subtitle": "but we&#39;re basically going to cue a bunch",
+        "start": 1285.799,
+        "dur": 3.601
+      },
+      {
+        "subtitle": "of callbacks",
+        "start": 1287.039,
+        "dur": 4.281
+      },
+      {
+        "subtitle": "um and they&#39;re going to clear and then",
+        "start": 1289.4,
+        "dur": 3.8
+      },
+      {
+        "subtitle": "we can actually run through and do the",
+        "start": 1291.32,
+        "dur": 4.2
+      },
+      {
+        "subtitle": "console. logs so in this example the",
+        "start": 1293.2,
+        "dur": 5.28
+      },
+      {
+        "subtitle": "console. log is fast so the benefit of",
+        "start": 1295.52,
+        "dur": 5.039
+      },
+      {
+        "subtitle": "doing it asynchronously isn&#39;t obvious um",
+        "start": 1298.48,
+        "dur": 3.319
+      },
+      {
+        "subtitle": "but let&#39;s say you&#39;re doing some like",
+        "start": 1300.559,
+        "dur": 4.36
+      },
+      {
+        "subtitle": "slow processing on each",
+        "start": 1301.799,
+        "dur": 7.24
+      },
+      {
+        "subtitle": "um uh each element in the array um I",
+        "start": 1304.919,
+        "dur": 6.441
+      },
+      {
+        "subtitle": "think I have that shown",
+        "start": 1309.039,
+        "dur": 4.041
+      },
+      {
+        "subtitle": "somewhere",
+        "start": 1311.36,
+        "dur": 5.679
+      },
+      {
+        "subtitle": "no no I don&#39;t okay so let&#39;s",
+        "start": 1313.08,
+        "dur": 5.92
+      },
+      {
+        "subtitle": "say",
+        "start": 1317.039,
+        "dur": 4.561
+      },
+      {
+        "subtitle": "oops so I have a delay function which is",
+        "start": 1319,
+        "dur": 6.6
+      },
+      {
+        "subtitle": "just slow right it&#39;s just a slow thing",
+        "start": 1321.6,
+        "dur": 8.079
+      },
+      {
+        "subtitle": "um so let&#39;s say processing",
+        "start": 1325.6,
+        "dur": 7.439
+      },
+      {
+        "subtitle": "async and",
+        "start": 1329.679,
+        "dur": 3.36
+      },
+      {
+        "subtitle": "here processing",
+        "start": 1334.12,
+        "dur": 6.4
+      },
+      {
+        "subtitle": "sync okay now I&#39;m going to turn on a",
+        "start": 1336.84,
+        "dur": 5.04
+      },
+      {
+        "subtitle": "thing I&#39;ve just been literally hacked",
+        "start": 1340.52,
+        "dur": 3.159
+      },
+      {
+        "subtitle": "together this morning um which is to",
+        "start": 1341.88,
+        "dur": 3.52
+      },
+      {
+        "subtitle": "simulate the repaint or the render in",
+        "start": 1343.679,
+        "dur": 3.681
+      },
+      {
+        "subtitle": "the browser so something I haven&#39;t",
+        "start": 1345.4,
+        "dur": 4.399
+      },
+      {
+        "subtitle": "touched on is how how um all of this",
+        "start": 1347.36,
+        "dur": 5.799
+      },
+      {
+        "subtitle": "interacts um with rendering I kind of",
+        "start": 1349.799,
+        "dur": 5
+      },
+      {
+        "subtitle": "touched on it but yeah not really",
+        "start": 1353.159,
+        "dur": 5.561
+      },
+      {
+        "subtitle": "explained it so basically the browser is",
+        "start": 1354.799,
+        "dur": 5.601
+      },
+      {
+        "subtitle": "kind of constrained by what you&#39;re doing",
+        "start": 1358.72,
+        "dur": 3.72
+      },
+      {
+        "subtitle": "in JavaScript right the browser would",
+        "start": 1360.4,
+        "dur": 5.32
+      },
+      {
+        "subtitle": "like to repaint the screen every 16.6",
+        "start": 1362.44,
+        "dur": 5.2
+      },
+      {
+        "subtitle": "milliseconds right 60 frames a second is",
+        "start": 1365.72,
+        "dur": 4.199
+      },
+      {
+        "subtitle": "our ideal like that&#39;s as fast as it will",
+        "start": 1367.64,
+        "dur": 4.08
+      },
+      {
+        "subtitle": "do repaints if it possibly",
+        "start": 1369.919,
+        "dur": 3.961
+      },
+      {
+        "subtitle": "can but it&#39;s constrained by what you&#39;re",
+        "start": 1371.72,
+        "dur": 4.48
+      },
+      {
+        "subtitle": "doing in JavaScript for various reasons",
+        "start": 1373.88,
+        "dur": 5.32
+      },
+      {
+        "subtitle": "um so it can&#39;t actually do a render if",
+        "start": 1376.2,
+        "dur": 5.76
+      },
+      {
+        "subtitle": "there is code on the stack right it&#39;s",
+        "start": 1379.2,
+        "dur": 4.76
+      },
+      {
+        "subtitle": "like the render kind of call is almost",
+        "start": 1381.96,
+        "dur": 3.52
+      },
+      {
+        "subtitle": "like a callback itself right it has to",
+        "start": 1383.96,
+        "dur": 3.56
+      },
+      {
+        "subtitle": "wait till the stack is clear now the",
+        "start": 1385.48,
+        "dur": 5.199
+      },
+      {
+        "subtitle": "difference is that um the render is",
+        "start": 1387.52,
+        "dur": 4.84
+      },
+      {
+        "subtitle": "given a higher priority than your",
+        "start": 1390.679,
+        "dur": 3.681
+      },
+      {
+        "subtitle": "callbacks so basically every 16",
+        "start": 1392.36,
+        "dur": 4.319
+      },
+      {
+        "subtitle": "milliseconds it&#39;s going to cue a uh it&#39;s",
+        "start": 1394.36,
+        "dur": 3.88
+      },
+      {
+        "subtitle": "going to cue a render and then it&#39;s",
+        "start": 1396.679,
+        "dur": 2.6
+      },
+      {
+        "subtitle": "going to have to wait till the stack is",
+        "start": 1398.24,
+        "dur": 3.919
+      },
+      {
+        "subtitle": "clear um before it can actually do the",
+        "start": 1399.279,
+        "dur": 5.961
+      },
+      {
+        "subtitle": "render so this is uh this render que is",
+        "start": 1402.159,
+        "dur": 4.681
+      },
+      {
+        "subtitle": "just simulating a render right so every",
+        "start": 1405.24,
+        "dur": 3.679
+      },
+      {
+        "subtitle": "second it&#39;s like can I do a render yes",
+        "start": 1406.84,
+        "dur": 3.439
+      },
+      {
+        "subtitle": "can I do a render yes can I do a render",
+        "start": 1408.919,
+        "dur": 2.401
+      },
+      {
+        "subtitle": "yes because our code isn&#39;t doing",
+        "start": 1410.279,
+        "dur": 4.441
+      },
+      {
+        "subtitle": "anything now however if I run the code",
+        "start": 1411.32,
+        "dur": 5.04
+      },
+      {
+        "subtitle": "we can see that while we&#39;re doing this",
+        "start": 1414.72,
+        "dur": 4.52
+      },
+      {
+        "subtitle": "like slow synchronous um Loop through",
+        "start": 1416.36,
+        "dur": 5.64
+      },
+      {
+        "subtitle": "this array our render is blocked right",
+        "start": 1419.24,
+        "dur": 4.24
+      },
+      {
+        "subtitle": "and if our render is blocked you can&#39;t",
+        "start": 1422,
+        "dur": 3.6
+      },
+      {
+        "subtitle": "select text on the screen you can&#39;t",
+        "start": 1423.48,
+        "dur": 4
+      },
+      {
+        "subtitle": "click things and see the response right",
+        "start": 1425.6,
+        "dur": 4.76
+      },
+      {
+        "subtitle": "like that example I showed earlier",
+        "start": 1427.48,
+        "dur": 5.92
+      },
+      {
+        "subtitle": "um in this example okay it&#39;s blocked",
+        "start": 1430.36,
+        "dur": 6
+      },
+      {
+        "subtitle": "while we um queue up the async timeouts",
+        "start": 1433.4,
+        "dur": 5.6
+      },
+      {
+        "subtitle": "but that&#39;s relatively quick",
+        "start": 1436.36,
+        "dur": 5.88
+      },
+      {
+        "subtitle": "um but we&#39;re given we&#39;re kind of giving",
+        "start": 1439,
+        "dur": 4.919
+      },
+      {
+        "subtitle": "the renderer a chance between each",
+        "start": 1442.24,
+        "dur": 3.4
+      },
+      {
+        "subtitle": "element because we&#39;ve queued it up",
+        "start": 1443.919,
+        "dur": 4.201
+      },
+      {
+        "subtitle": "asynchronously um to kind of jump in",
+        "start": 1445.64,
+        "dur": 5.279
+      },
+      {
+        "subtitle": "there and and uh and do the render did",
+        "start": 1448.12,
+        "dur": 6.88
+      },
+      {
+        "subtitle": "that make sense yeah cool um so yeah",
+        "start": 1450.919,
+        "dur": 5.76
+      },
+      {
+        "subtitle": "that&#39;s just kind of this is just like a",
+        "start": 1455,
+        "dur": 3.52
+      },
+      {
+        "subtitle": "simulation right of of how the rendering",
+        "start": 1456.679,
+        "dur": 3.841
+      },
+      {
+        "subtitle": "Works um but it just really shows you",
+        "start": 1458.52,
+        "dur": 3.36
+      },
+      {
+        "subtitle": "like when people say don&#39;t block the",
+        "start": 1460.52,
+        "dur": 3.279
+      },
+      {
+        "subtitle": "event Loop this is exactly what they&#39;re",
+        "start": 1461.88,
+        "dur": 3.279
+      },
+      {
+        "subtitle": "talking about they&#39;re saying don&#39;t put",
+        "start": 1463.799,
+        "dur": 3.48
+      },
+      {
+        "subtitle": "shitty slow code on the stack CU When",
+        "start": 1465.159,
+        "dur": 3.801
+      },
+      {
+        "subtitle": "you do that the browser can&#39;t do what it",
+        "start": 1467.279,
+        "dur": 3.4
+      },
+      {
+        "subtitle": "needs to do which is like create a nice",
+        "start": 1468.96,
+        "dur": 5.079
+      },
+      {
+        "subtitle": "fluid UI right um so this is why doing",
+        "start": 1470.679,
+        "dur": 5
+      },
+      {
+        "subtitle": "things like image processing or whatever",
+        "start": 1474.039,
+        "dur": 3.921
+      },
+      {
+        "subtitle": "or like animating too many things just",
+        "start": 1475.679,
+        "dur": 3.72
+      },
+      {
+        "subtitle": "gets kind of sluggish right if you&#39;re",
+        "start": 1477.96,
+        "dur": 4.199
+      },
+      {
+        "subtitle": "not careful about how you ceue up that",
+        "start": 1479.399,
+        "dur": 6.481
+      },
+      {
+        "subtitle": "code um so an example of that um we can",
+        "start": 1482.159,
+        "dur": 6.52
+      },
+      {
+        "subtitle": "see um with scroll",
+        "start": 1485.88,
+        "dur": 7.56
+      },
+      {
+        "subtitle": "handlers so um scroll handle like scroll",
+        "start": 1488.679,
+        "dur": 7.841
+      },
+      {
+        "subtitle": "events on in the Dom trigger a lot right",
+        "start": 1493.44,
+        "dur": 5.119
+      },
+      {
+        "subtitle": "like they trigger like every I presume",
+        "start": 1496.52,
+        "dur": 3.92
+      },
+      {
+        "subtitle": "they trigger on every frame so like 16",
+        "start": 1498.559,
+        "dur": 4.961
+      },
+      {
+        "subtitle": "every 16 Mills um so if I have code like",
+        "start": 1500.44,
+        "dur": 6.599
+      },
+      {
+        "subtitle": "this right um on document. scroll",
+        "start": 1503.52,
+        "dur": 6.36
+      },
+      {
+        "subtitle": "animate something or do some",
+        "start": 1507.039,
+        "dur": 5.721
+      },
+      {
+        "subtitle": "work if I have this code like as I",
+        "start": 1509.88,
+        "dur": 5.36
+      },
+      {
+        "subtitle": "scroll it&#39;s just going to queue up like",
+        "start": 1512.76,
+        "dur": 5.56
+      },
+      {
+        "subtitle": "a ton of callbacks right and then it has",
+        "start": 1515.24,
+        "dur": 4.76
+      },
+      {
+        "subtitle": "to like go through and process all of",
+        "start": 1518.32,
+        "dur": 3.52
+      },
+      {
+        "subtitle": "those and if each of the processing of",
+        "start": 1520,
+        "dur": 4.44
+      },
+      {
+        "subtitle": "those is slow then okay you&#39;re not",
+        "start": 1521.84,
+        "dur": 3.959
+      },
+      {
+        "subtitle": "blocking the stack but you&#39;re kind of",
+        "start": 1524.44,
+        "dur": 5.04
+      },
+      {
+        "subtitle": "flooding the Q with Q with events right",
+        "start": 1525.799,
+        "dur": 6.88
+      },
+      {
+        "subtitle": "um so this is like just helping",
+        "start": 1529.48,
+        "dur": 5.48
+      },
+      {
+        "subtitle": "visualize I guess like what happens when",
+        "start": 1532.679,
+        "dur": 4.12
+      },
+      {
+        "subtitle": "you actually trigger all these callbacks",
+        "start": 1534.96,
+        "dur": 3.28
+      },
+      {
+        "subtitle": "so there&#39;s ways you can like debounce",
+        "start": 1536.799,
+        "dur": 4.521
+      },
+      {
+        "subtitle": "that to basically say Okay um okay we&#39;re",
+        "start": 1538.24,
+        "dur": 5.319
+      },
+      {
+        "subtitle": "going to like queue up all those events",
+        "start": 1541.32,
+        "dur": 4.52
+      },
+      {
+        "subtitle": "but let&#39;s only do those slow work every",
+        "start": 1543.559,
+        "dur": 4.881
+      },
+      {
+        "subtitle": "like every few seconds or until the user",
+        "start": 1545.84,
+        "dur": 4.92
+      },
+      {
+        "subtitle": "stops scrolling for some amount of",
+        "start": 1548.44,
+        "dur": 4.16
+      },
+      {
+        "subtitle": "time",
+        "start": 1550.76,
+        "dur": 6.2
+      },
+      {
+        "subtitle": "um cool so I think that&#39;s basically um",
+        "start": 1552.6,
+        "dur": 6.679
+      },
+      {
+        "subtitle": "basically it there&#39;s like a whole other",
+        "start": 1556.96,
+        "dur": 5.439
+      },
+      {
+        "subtitle": "talk in how the hell this works",
+        "start": 1559.279,
+        "dur": 5.561
+      },
+      {
+        "subtitle": "um because",
+        "start": 1562.399,
+        "dur": 4.961
+      },
+      {
+        "subtitle": "basically in running the code like this",
+        "start": 1564.84,
+        "dur": 4.559
+      },
+      {
+        "subtitle": "code runs at runtime right and it&#39;s",
+        "start": 1567.36,
+        "dur": 4.919
+      },
+      {
+        "subtitle": "slowed down by I run it through apra",
+        "start": 1569.399,
+        "dur": 5
+      },
+      {
+        "subtitle": "which is a JavaScript parser before and",
+        "start": 1572.279,
+        "dur": 3.841
+      },
+      {
+        "subtitle": "after every single statement in the code",
+        "start": 1574.399,
+        "dur": 3.801
+      },
+      {
+        "subtitle": "I insert a big while loop that takes",
+        "start": 1576.12,
+        "dur": 5.12
+      },
+      {
+        "subtitle": "half a second um so basically just like",
+        "start": 1578.2,
+        "dur": 5.92
+      },
+      {
+        "subtitle": "slow motions the code um ship it to a",
+        "start": 1581.24,
+        "dur": 4.159
+      },
+      {
+        "subtitle": "web worker and then do a whole bunch of",
+        "start": 1584.12,
+        "dur": 4.279
+      },
+      {
+        "subtitle": "stuff to like visualize what&#39;s happening",
+        "start": 1585.399,
+        "dur": 4.841
+      },
+      {
+        "subtitle": "while doing it at runtime if that makes",
+        "start": 1588.399,
+        "dur": 3.52
+      },
+      {
+        "subtitle": "sense so there&#39;s like a whole other talk",
+        "start": 1590.24,
+        "dur": 3.84
+      },
+      {
+        "subtitle": "and all of that but um I&#39;m super excited",
+        "start": 1591.919,
+        "dur": 3.281
+      },
+      {
+        "subtitle": "about it and super happy to talk to",
+        "start": 1594.08,
+        "dur": 4.52
+      },
+      {
+        "subtitle": "anyone after about it um because I think",
+        "start": 1595.2,
+        "dur": 5.52
+      },
+      {
+        "subtitle": "it&#39;s kind of neat",
+        "start": 1598.6,
+        "dur": 5.33
+      },
+      {
+        "subtitle": "so with that thanks very",
+        "start": 1600.72,
+        "dur": 5.48
+      },
+      {
+        "subtitle": "[Applause]",
+        "start": 1603.93,
+        "dur": 5.51
+      },
+      {
+        "subtitle": "[Music]",
+        "start": 1606.2,
+        "dur": 3.24
+      },
+      {
+        "subtitle": "much",
+        "start": 1611.2,
+        "dur": 3
+      }
+    ],
+    "transcriptionAsText": "[Music] hello everyone uh thanks for coming to the Sidetrack it's awesome to see it packed out in here can everyone give me a stretch that's good I need to stretch so I look less weird okay um so I want to talk about the event Loop and what the heck is the event Loop um as in the event Loop inside JavaScript so first up um as he said uh I work for andette which is an awesome little Dev shop SL Product Company in the US um look us up if you need help with real time stuff that's what we're good at so about 18 months ago I'm a paid professional JavaScript developer I thought to myself how does like JavaScript actually work and I wasn't entirely sure I'd heard V8 as a term you know Chrome's runtime didn't really know what that meant what that did um I'd heard things like single-threaded you know obviously I'm using callbacks how do callbacks work so I kind of started a journey of like reading and research and experimenting in the browser um which basically started like this right I kind of was like JavaScript what are you and it's like I'm a single threader non blocking asynchronous in current language right that's uh yeah cool I have a c stack and event Loop a coack Q and some other apis and stuff right I did not do a computer science degree I don't I mean these words they're words so you know I heard of like V8 and the various run times in different browsers so I like looked to V8 and said do you have a CO stack and event leave a c q and some other apis and stuff I have a coold stack in a heap I don't know what those other things are okay interesting so basically 18 months pass like we're 18 months later now and like I think I think I get this um and so this is what I want to share with you today so hopefully this will be useful if you're relatively new to JavaScript um help you understand why JavaScript is so weird when you compare it to other languages you might have used um why callbacks are a thing which calls us hell but are required um and also if you're not if you're an experienced JavaScript developer hopefully give you some kind of fresh insights into how the runtime that you're using everyday works so that you can kind of think about it um a little better so if we look at the JavaScript runtime itself like V8 for example which is the runtime inside Chrome um this is what is uh this is a simplified view really of what the JavaScript runtime is it's a heap which is we don't need to worry about that it's kind of boring it's just like where memory allocation happens um and then there's the co stack um which is where your like um stack frames are and all that kind of stuff but if you like clone the V8 code base and gret for things like set timeout or Dom or XML HTP request they're not in there they don't exist in V8 which was kind of a surprise to me right like set timeout is one of those like first things you use in JavaScript when you start thinking about async stuff and it's not in the V8 Source hm interesting so over this 18 months of Discovery I've come to realize that this is really this is really the bigger picture and this is what I'm hoping to get you all kind of on board with today and understand what these pieces are so we have the V8 runtime but then we have these things called Web apis which are um extra things that the browser provides so the Dom um Ajax set timeout things like that then we have this mythical event Loop um and the cat Q um I'm sure you've heard some of these terms before um but maybe don't quite understand how these pieces like pull together so I'm going to start from the beginning some of this will be new to or you know the words might be new to people other other people might get this but we're going to quickly kind of move on from here so so bear with me if this is if this is obvious but I think for a lot of people it's not so JavaScript is a single threaded programing language single threaded runtime which means it has a single call stack and it can do one thing at a time like that's what a single thread means is like the program can run one one piece of code at a time so let's try and visualize that just to kind of to get our heads around what that means so if I have some code like this on the on your left um we've got a few functions a function multiply which multiplies two numbers square which calls multiply with that you know the same number twice um a function which prints the square of a number by calling square and then calling cons. log and then at the bottom of our file we actually run print square right this code all good makees sense cool so if we run this well I should back up a step sorry so the call stack is basically um it's a data structure which records basically where in the program we are so if we step into a function we push something onto the stack if we return from a function we pop off the top of the stack that's all the stack can do we push stuff on the top pop off the top so if we run this file well there's kind of a main function right like the the file itself so we push that onto the stack then we have some function definitions they're just like defining the state of the world and then finally we get to print Square right so print square is a function call so we push that onto the stack and immediately inside print Square we're going to call Square which we're going to push onto the stack which calls multiply and now we hit a return statement right we've we multiply a and b and we return so I said when we return we pop something off the stack so pop uh multiply off the stack return into square return into print Square console. log uh print square is now there's no return but it's implicit because we got to the end of the function and we're done right so that that is like a visualization of the col stack does that make sense yes well okay great so even if you haven't really thought about or visualized the col stack before you've undoubtedly come across it when you've been doing um certainly browser side development um so if we have code like this um a function B which calls bar which calls Fu which throws an error then if we run this in Chrome we see something like this in the dev tools right um uncore error oops and it prints the stack Trace that is the stack Trace right the of the stack when that error happened so UNC error oops which was called in Fu which was called by bar which was called by B which was called by this Anonymous function which is our our main right um equally if you've heard the term like blowing the stack then this is an example of that right have a function f which calls Fu so what's going to happen well we run main we call Fu which calls Foo which calls Fu which calls Foo and ultimately Chrome says well H you probably didn't mean to K Fu 16,000 times recursively so I'll just like kill things for you and you can figure out where your bug lies right so although I may be representing a new kind of side of the C stack you've probably got some sense of it um in your development practice already so the big question then H comes is like what happens when things are slow so we talk about blocking and blocking um Behavior and blocking there's no strict definition of what is and isn't blocking really it's just code that is slow right so console.log is not very slow doing a while loop from 1 to 10 billion is kind of slow doing image processing is slow Network requests are slow um so things which are slow and on that stack are what a blocking what blocking means so here's a little example so let's say we have this is like a fake fake bit of code um get syn synchronous right like uh J queries like uh Ajax request what would happen if those were synchronous requests so forget what we know about ASN cacks they're synchronous so if we just go through it like we have been we call get sync and then we wait right cuz we're doing Network requests networks relative to computers are very very slow hopefully that Network request completes we can move on wait move on wait and I mean this network request might never finish so yeah I guess I'll go home um finally those three you know blocking behavior is complete and we can clear the stack right so in a programming language which um is single-threaded um you're not using threads like say Ruby like that's what happens right we make a network request we have to just wait till it's done because we we have no way of um handling that so why is this actually a problem the problem is because we are running code in browsers so let's uh why can't I here we go okay so this is just uh this is Chrome um this is the code I just ran I browsers don't give us well they do actually give us synchronous Ajax requests but um I'm actually just faking this out with a big while loop because while Loops are synchronous so I basically while loop for like a second or 5 seconds I think um before continuing so if I open up the uh the console here um we can see what happens so we request f.com and like while this is happening I can't do anything right like even the Run button hasn't finished rendering the fact that I previously clicked it because the browser is blocked it's stuck it can't do anything until those requests complete and then all hell breaks loose right cuz I did some stuff and it figured out that I'd done it it just couldn't actually like render it couldn't do anything and that's because if that Co stack has things on it and here it's got these um yeah it's still going um we've got the synchronous request right we've blocked the col stack the browser can't do anything else it can't render it can't run any other code it's stuck not ideal right if we want people to have nice fluid uis we can't block the stack so so how do we handle this well the simplest solution we're provided with is asynchronous callbacks right so they're almost no blocking um uh functions in the browser equally in node they're all made asynchronous which basically means we run some code give it a callback and we run that later right we know what if you've been writing JavaScript you've seen asynchronous callbacks what does this actually look like so simple example to remind people just where we're at code like this conso log high right we run this at timeout but that cues the console. log for the future somehow so then we skip straight onto JS comp Vu log that and then 5 seconds later we log there right make sense happy basically like that set time out is doing something so asynchronous callbacks with regards to the stack we saw before how does this work so let's run the code conso Lo High set timeout okay what's going to happen here we know that conso log there doesn't run immediately it's going to run in 5 seconds time we can't push that log onto the stack so somehow it just disappears we we don't have like a way of describing this yet but we'll come to it we log JS comp foru clear and then 5 seconds later somehow magically cons there appears on the stack how does that happen and that's this is basically where the event Loop comes in and concurrency right so I've been kind of partially lying to you and telling you that JavaScript can only do do one thing at a time that is true JavaScript the runtime can only do one thing at a time it can't make an Ajax request while you're doing other code it can't do a set time out while you're doing other code um the reason we can do things concurrently is that the browser is more than just the runtime so remember this diagram the JavaScript runtime can do one thing at a time but the browser gives us these other things right it gives us these web apis these are effectively threads that you can't access like threads you can just like make calls to and those pieces of the browser are where this concurrency kicks in um if you're a backend person this diagram looks basically identical for node except instead of we web apis we have C++ apis right and the the threading and all that stuff is hidden from you um by being run in like C++ land okay so now that we have this picture let's see how this code runs in this uh kind of more full picture of what a browser looks like so same as before run the code consult Al High Lo to the console simple now we can see what happens when we call set timeout so when we call set timeout we are we pass this callback function and a delay to the set timeout call Now set timeout is an API provided to us by the browser remember I said it doesn't live like in the V8 Source it's like extra stuff we get in the environment that we're running the JavaScript runtime in so effectively we kick off a timer right in like the browser kicks off a timer for you um and now it's going to handle going to handle the countdown for you right so that means that our set timeout call itself is now complete so we can pop off the stack JS comp for you clear so now we've got this um timer in the web API which 5 seconds later is going to complete now the web API can't just like start modifying your code right it can't just like Chuck stuck onto the stack when it's ready because if it did it would like just appear randomly in the middle of your code um so this is where the task Q or the Callback Q kicks in so basically any of the web apis when they're done they push your callback onto the task q and finally we get to the event Loop um the title of the talk is what the heck is the event Loop the event Loop is like the simplest little piece in this whole equation um and it has one very simple job the event Loop's job is to look at the stack and look at the task Q if the stack is empty it takes the first thing on the Queue and pushes onto the stack which effectively runs it right so here we can see that now the stack is clear there's a call back on the task Q so the event loot runs and says oh I get to do something here pushes the Callback back onto the stack now remember the stack is like JavaScript land right this is back inside V8 so the Callback appears on the stack and gets run conso theog there and we're done does that make sense everyone with me awesome okay so now we can see um how this works with probably one one of the first um encounters you would have had with async stuff which is when for some weird reason someone says oh you have to call set time out zero like okay you want me to run the function in zero time why would I wrap it in a set timeout like the first time you come across this you you're anything like me you're like okay well I sort of see this it's doing something but I don't really know why um and the reason is generally if you're trying to defer something until the stack is clear right so we know looking at this um if you've written JavaScript that we're just to see the same result we're going to see high we're going to see JS comp foru and then there is going to somehow appear at the end so running it we can see how that happens uh Conant log High set time out zero now that's going to complete immediately and push the call back onto the Q but remember what I said about the event Loop it has to wait until the stack is clear before it can push the call back onto the stack so your stack is going to continue to run right your main file is going to continue to run uh con JS comp for you and clear now that we're clear the event Loop can kick in run your call back so that's um like an example of set time out zero is like pushing deferring that execution of code for whatever reason um to the end of the stack or until the stack is clear um okay so all these web apis work the same way right if we have um Ajax requests we make an Ajax request to a URL with a callback just works the same way uh oops sorry Conant log High Mak ax request the code for running that Ajax request does not live in the JavaScript runtime it lives in the browser as a web API so we spin up a xhr web API with a callback in the URL your code can continue to run until that xhr request completes or doesn't complete it may never complete but that's okay your stat can continue to run assuming it does complete callback gets pushed onto the queue picked up by the event Loop and it's run right that's all that happens when an async call happens okay so let's do a crazy complicated example so I hope this is going to work um if you hadn't kind of realized like all this is all in keynote um there's like I don't know how like 500 animation steps in this whole deck so hopefully that oh huh [Music] oh so interesting we were given a link H is this big enough can people see okay so basically I wrote this talk um for scotton JS earlier in the year and I did it there and then after the talk I broke half of the slides um and could not be bothered to redo all the slides cuz it was a total pain in the ass and keynote to do it so in instead I took the much easier route um of writing a tool which can visualize the JavaScript runtime at runtime and it's called Loop so let's just run this example and uh which was kind of the example we had on the previous slide I haven't shimmed um xhr yet it's doable I just haven't done it so as you can see the code we're going to log something uh this is a simple shim around like uh do ad event listener um set timeout and we're going to do a console. log so I'm just going to run it and see what happens so uh add a Dom API add a timeout timeout is going to count down code's going to continue to run pushes the call back into the queue which runs which runs the console. log and we're done um if I click on here then it's going to um trigger the web API cu the call back for the click and run it if I click 100 times we can see what happen happens right I clicked The Click doesn't get processed immediately The Click gets pushed onto the que and as the que gets processed eventually my click is going to going to get dealt with right um so I have a few more examples I want to run run through here uh except I don't know how to see tubs so let's just see if I can find it here we go okay so I'm just going to run through a few examples just to kind of talk about a few things that you might have run into and not kind of thought about with async um apis so in this example we call set time out four times um with a 1C delay and run console. log high so if we run it we can see that we uh run a few timeouts but the timeout callbacks get cued right so that that fourth callback we asked for a 1C delay and it's still waiting the Callback hasn't run right so this kind of illustrates the the like what set timeout is actually doing set timeout is not a guaranteed time to execution it's a minimum time to execution just like set timeout zero doesn't run the code immediately it runs the code next is sometime right um so in this example I want to talk about um callbacks so depending on who you speak to um and how they phrase things um callbacks can be one of two things callbacks can be any function that another function calls or callbacks can be more explicitly an asynchronous callback as in one that is going to get pushed onto the Callback Q at some point in the future so this little bit code illustrates the difference right the for each um method on an array it doesn't run it takes a function which you could call a callback but it's not running it asynchronously right it's running it within the current stack um we could Define an asynchronous for each so so we could uh it it's going to take an array and a callback and then for each item in the array it's going to do a set time out zero with that callback right I guess this should actually pass in the value but anyway so I'm going to run it and we can see what the difference is so for the first block of code that runs it's going to sit and block the stack right until it's complete whereas in the async version okay it's it's slowed down but we're basically going to cue a bunch of callbacks um and they're going to clear and then we can actually run through and do the console. logs so in this example the console. log is fast so the benefit of doing it asynchronously isn't obvious um but let's say you're doing some like slow processing on each um uh each element in the array um I think I have that shown somewhere no no I don't okay so let's say oops so I have a delay function which is just slow right it's just a slow thing um so let's say processing async and here processing sync okay now I'm going to turn on a thing I've just been literally hacked together this morning um which is to simulate the repaint or the render in the browser so something I haven't touched on is how how um all of this interacts um with rendering I kind of touched on it but yeah not really explained it so basically the browser is kind of constrained by what you're doing in JavaScript right the browser would like to repaint the screen every 16.6 milliseconds right 60 frames a second is our ideal like that's as fast as it will do repaints if it possibly can but it's constrained by what you're doing in JavaScript for various reasons um so it can't actually do a render if there is code on the stack right it's like the render kind of call is almost like a callback itself right it has to wait till the stack is clear now the difference is that um the render is given a higher priority than your callbacks so basically every 16 milliseconds it's going to cue a uh it's going to cue a render and then it's going to have to wait till the stack is clear um before it can actually do the render so this is uh this render que is just simulating a render right so every second it's like can I do a render yes can I do a render yes can I do a render yes because our code isn't doing anything now however if I run the code we can see that while we're doing this like slow synchronous um Loop through this array our render is blocked right and if our render is blocked you can't select text on the screen you can't click things and see the response right like that example I showed earlier um in this example okay it's blocked while we um queue up the async timeouts but that's relatively quick um but we're given we're kind of giving the renderer a chance between each element because we've queued it up asynchronously um to kind of jump in there and and uh and do the render did that make sense yeah cool um so yeah that's just kind of this is just like a simulation right of of how the rendering Works um but it just really shows you like when people say don't block the event Loop this is exactly what they're talking about they're saying don't put shitty slow code on the stack CU When you do that the browser can't do what it needs to do which is like create a nice fluid UI right um so this is why doing things like image processing or whatever or like animating too many things just gets kind of sluggish right if you're not careful about how you ceue up that code um so an example of that um we can see um with scroll handlers so um scroll handle like scroll events on in the Dom trigger a lot right like they trigger like every I presume they trigger on every frame so like 16 every 16 Mills um so if I have code like this right um on document. scroll animate something or do some work if I have this code like as I scroll it's just going to queue up like a ton of callbacks right and then it has to like go through and process all of those and if each of the processing of those is slow then okay you're not blocking the stack but you're kind of flooding the Q with Q with events right um so this is like just helping visualize I guess like what happens when you actually trigger all these callbacks so there's ways you can like debounce that to basically say Okay um okay we're going to like queue up all those events but let's only do those slow work every like every few seconds or until the user stops scrolling for some amount of time um cool so I think that's basically um basically it there's like a whole other talk in how the hell this works um because basically in running the code like this code runs at runtime right and it's slowed down by I run it through apra which is a JavaScript parser before and after every single statement in the code I insert a big while loop that takes half a second um so basically just like slow motions the code um ship it to a web worker and then do a whole bunch of stuff to like visualize what's happening while doing it at runtime if that makes sense so there's like a whole other talk and all of that but um I'm super excited about it and super happy to talk to anyone after about it um because I think it's kind of neat so with that thanks very [Applause] [Music] much"
+  }
+]
