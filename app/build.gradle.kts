@@ -2,9 +2,16 @@ plugins {
     alias(libs.plugins.androidApplication)
 }
 
+import java.util.Properties
+import java.io.FileInputStream
+
 android {
     namespace = "com.example.yt_transcriptor_app"
     compileSdk = 34
+
+    buildFeatures {
+        buildConfig = true
+    }
 
     defaultConfig {
         applicationId = "com.example.yt_transcriptor_app"
@@ -14,6 +21,14 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        val envFile = project.rootProject.file(".env")
+        val properties = Properties()
+        if (envFile.exists()) {
+            properties.load(FileInputStream(envFile))
+        }
+        val apiKey = properties.getProperty("RAPIDAPI_KEY") ?: "\"\""
+        buildConfigField("String", "RAPIDAPI_KEY", apiKey)
     }
 
     buildTypes {
@@ -35,6 +50,7 @@ dependencies {
 
     implementation(libs.appcompat)
     implementation(libs.material)
+    implementation("com.pierfrancescosoffritti.androidyoutubeplayer:core:12.1.0")
     implementation(libs.activity)
     implementation(libs.constraintlayout)
     testImplementation(libs.junit)
