@@ -23,6 +23,41 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilVideoLink"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="8dp"
+        android:textColorHint="#888888"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+        app:layout_constraintTop_toBottomOf="@id/tvTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/btnLoad">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etVideoLink"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="YouTube link or Video ID"
+            android:textColor="#FFFFFF"
+            android:inputType="textUri"
+            android:maxLines="1" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnLoad"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:text="Load"
+        android:textColor="#FFFFFF"
+        app:backgroundTint="#FF3333"
+        app:layout_constraintTop_toTopOf="@id/tilVideoLink"
+        app:layout_constraintBottom_toBottomOf="@id/tilVideoLink"
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <ProgressBar
         android:id="@+id/progressBar"
         android:layout_width="wrap_content"
@@ -38,9 +73,24 @@
         android:layout_height="0dp"
         android:clipToPadding="false"
         android:paddingBottom="20dp"
-        app:layout_constraintTop_toBottomOf="@id/tvTitle"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@id/tilVideoLink"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/tvError"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#FF6B6B"
+        android:textSize="16sp"
+        android:gravity="center"
+        android:padding="24dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="@id/recyclerView"
+        app:layout_constraintBottom_toBottomOf="@id/recyclerView"
+        app:layout_constraintStart_toStartOf="@id/recyclerView"
+        app:layout_constraintEnd_toEndOf="@id/recyclerView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

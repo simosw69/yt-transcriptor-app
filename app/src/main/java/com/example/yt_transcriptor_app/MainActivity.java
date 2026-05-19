@@ -2,7 +2,9 @@ package com.example.yt_transcriptor_app;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -32,9 +34,11 @@ import java.util.concurrent.Executors;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String VIDEO_ID = "8aGhZQkoFbQ";
+    private String currentVideoId = "FWCxJPnsZi4";
+    private YouTubePlayer activeYouTubePlayer;  
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
+    private android.widget.TextView tvError;
     private SubtitleAdapter adapter;
     private List<Subtitle> subtitleList = new ArrayList<>();
     private YouTubePlayerView youTubePlayerView;
@@ -56,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.recyclerView);
         progressBar = findViewById(R.id.progressBar);
+        tvError = findViewById(R.id.tvError);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         adapter = new SubtitleAdapter(subtitleList);
@@ -67,12 +72,40 @@ public class MainActivity extends AppCompatActivity {
             youTubePlayerView.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
                 @Override
                 public void onReady(@NonNull YouTubePlayer youTubePlayer) {
-                    youTubePlayer.loadVideo(VIDEO_ID, 0);
+                    activeYouTubePlayer = youTubePlayer;
+                    youTubePlayer.loadVideo(currentVideoId, 0);
                 }
 
                 @Override
                 public void onCurrentSecond(@NonNull YouTubePlayer youTubePlayer, float second) {
                     updateActiveSubtitle(second);
+                }
+
+                @Override
+                public void onError(@NonNull YouTubePlayer youTubePlayer, @NonNull com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants.PlayerError error) {
+                    showError("YouTube Player Error: " + error.name() + " (Video may be restricted or unavailable).");
+                }
+            });
+        }
+
+        EditText etVideoLink = findViewById(R.id.etVideoLink);
+        View btnLoad = findViewById(R.id.btnLoad);
+        if (btnLoad != null && etVideoLink != null) {
+            btnLoad.setOnClickListener(v -> {
+                String input = etVideoLink.getText().toString().trim();
+                if (!input.isEmpty()) {
+                    String extractedId = extractVideoId(input);
+                    if (extractedId != null) {
+                        currentVideoId = extractedId;
+                        if (activeYouTubePlayer != null) {
+                            activeYouTubePlayer.loadVideo(currentVideoId, 0);
+                        }
+                        fetchTranscripts();
+                    } else {
+                        Toast.makeText(MainActivity.this, "Invalid YouTube link or ID", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(MainActivity.this, "Please enter a link or ID", Toast.LENGTH_SHORT).show();
                 }
             });
         }
@@ -112,11 +145,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void fetchTranscripts() {
-        progressBar.setVisibility(View.VISIBLE);
+        runOnUiThread(() -> {
+            progressBar.setVisibility(View.VISIBLE);
+            if (tvError != null) tvError.setVisibility(View.GONE);
+        });
+
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> {
             try {
-                URL url = new URL("https://youtube-transcriptor.p.rapidapi.com/transcript?video_id=" + VIDEO_ID + "&lang=en");
+                URL url = new URL("https://youtube-transcriptor.p.rapidapi.com/transcript?video_id=" + currentVideoId + "&lang=it");
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("GET");
                 conn.setRequestProperty("x-rapidapi-host", "youtube-transcriptor.p.rapidapi.com");
@@ -124,10 +161,22 @@ public class MainActivity extends AppCompatActivity {
                 conn.setRequestProperty("Content-Type", "application/json");
 
                 int status = conn.getResponseCode();
-                InputStream inputStream = (status >= 200 && status < 300)
-                        ? conn.getInputStream()
-                        : conn.getErrorStream();
+                
+                if (status == 403 || status == 401) {
+                    showError("API Error: Expired key or invalid subscription.");
+                    return;
+                } else if (status == 429) {
+                    showError("API Rate Limit Exceeded (HTTP 429): Too many requests. Please try again later.");
+                    return;
+                } else if (status == 404) {
+                    showError("Video not found or transcripts unavailable for this video.");
+                    return;
+                } else if (status < 200 || status >= 300) {
+                    showError("Server error (HTTP " + status + "). Please try again.");
+                    return;
+                }
 
+                InputStream inputStream = conn.getInputStream();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "utf-8"));
                 StringBuilder response = new StringBuilder();
                 String line;
@@ -136,14 +185,33 @@ public class MainActivity extends AppCompatActivity {
                 }
                 reader.close();
 
-                JSONArray jsonArray = new JSONArray(response.toString());
+                String responseStr = response.toString();
+                
+                // Se la risposta è un JSON object (es. {"message": "..."} o {"error": "..."}), estraiamo il messaggio d'errore.
+                if (responseStr.trim().startsWith("{")) {
+                    org.json.JSONObject errorObj = new org.json.JSONObject(responseStr);
+                    String apiMessage = errorObj.optString("message", null);
+                    if (apiMessage == null || apiMessage.isEmpty()) {
+                        apiMessage = errorObj.optString("error", null);
+                    }
+                    if (apiMessage == null || apiMessage.isEmpty()) {
+                        apiMessage = errorObj.optString("detail", null);
+                    }
+                    if (apiMessage == null || apiMessage.isEmpty()) {
+                        apiMessage = responseStr; // Fallback: mostra tutto il JSON
+                    }
+                    showError("API Error: " + apiMessage);
+                    return;
+                }
+
+                JSONArray jsonArray = new JSONArray(responseStr);
                 if (jsonArray.length() > 0) {
-                    JSONObject videoObj = jsonArray.getJSONObject(0);
-                    JSONArray transArray = videoObj.getJSONArray("transcription");
+                    org.json.JSONObject videoObj = jsonArray.getJSONObject(0);
+                    org.json.JSONArray transArray = videoObj.getJSONArray("transcription");
                     
                     List<Subtitle> parsedSubtitles = new ArrayList<>();
                     for (int i = 0; i < transArray.length(); i++) {
-                        JSONObject subObj = transArray.getJSONObject(i);
+                        org.json.JSONObject subObj = transArray.getJSONObject(i);
                         // Convert HTML entities like &#39; inside the subtitle
                         String text = android.text.Html.fromHtml(subObj.getString("subtitle"), android.text.Html.FROM_HTML_MODE_LEGACY).toString();
                         double start = subObj.getDouble("start");
@@ -158,14 +226,55 @@ public class MainActivity extends AppCompatActivity {
                         adapter.notifyDataSetChanged();
                     });
                 } else {
-                    runOnUiThread(() -> progressBar.setVisibility(View.GONE));
+                    showError("No transcripts found for this video.");
                 }
 
+            } catch (java.io.IOException e) {
+                e.printStackTrace();
+                showError("Network error: check your internet connection.");
+            } catch (org.json.JSONException e) {
+                e.printStackTrace();
+                showError("Parsing error: invalid transcript data format.");
             } catch (Exception e) {
                 e.printStackTrace();
-                runOnUiThread(() -> progressBar.setVisibility(View.GONE));
+                showError("An unexpected error occurred.");
             }
         });
+    }
+
+    private void showError(String message) {
+        runOnUiThread(() -> {
+            progressBar.setVisibility(View.GONE);
+            subtitleList.clear();
+            adapter.notifyDataSetChanged();
+            if (tvError != null) {
+                tvError.setText(message);
+                tvError.setVisibility(View.VISIBLE);
+            }
+            Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG).show();
+        });
+    }
+
+    private String extractVideoId(String input) {
+        if (input == null || input.trim().isEmpty()) {
+            return null;
+        }
+        input = input.trim();
+        
+        // If it's already a valid 11-char ID
+        if (input.matches("^[a-zA-Z0-9_-]{11}$")) {
+            return input;
+        }
+        
+        // Regex pattern to extract video ID from YouTube URLs
+        String regex = "^(?:https?:\\/\\/)?(?:www\\.|m\\.)?(?:youtube\\.com\\/(?:watch\\?(?:.*&)?v=|embed\\/|v\\/|shorts\\/)|youtu\\.be\\/)([a-zA-Z0-9_-]{11})";
+        java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(regex, java.util.regex.Pattern.CASE_INSENSITIVE);
+        java.util.regex.Matcher matcher = pattern.matcher(input);
+        if (matcher.find()) {
+            return matcher.group(1);
+        }
+        
+        return null;
     }
 
     @Override
