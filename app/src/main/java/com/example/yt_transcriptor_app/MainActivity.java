@@ -7,7 +7,6 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -15,9 +14,8 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener;
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -34,14 +32,13 @@ import java.util.concurrent.Executors;
 
 public class MainActivity extends AppCompatActivity {
 
-    private String currentVideoId = "FWCxJPnsZi4";
-    private YouTubePlayer activeYouTubePlayer;  
+    private static final String CACHE_FILE_NAME = "transcript_cache.json";
+    private String currentVideoId = null;
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
     private android.widget.TextView tvError;
     private SubtitleAdapter adapter;
     private List<Subtitle> subtitleList = new ArrayList<>();
-    private YouTubePlayerView youTubePlayerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,27 +63,6 @@ public class MainActivity extends AppCompatActivity {
         adapter = new SubtitleAdapter(subtitleList);
         recyclerView.setAdapter(adapter);
 
-        youTubePlayerView = findViewById(R.id.youtube_player_view);
-        if (youTubePlayerView != null) {
-            getLifecycle().addObserver(youTubePlayerView);
-            youTubePlayerView.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
-                @Override
-                public void onReady(@NonNull YouTubePlayer youTubePlayer) {
-                    activeYouTubePlayer = youTubePlayer;
-                    youTubePlayer.loadVideo(currentVideoId, 0);
-                }
-
-                @Override
-                public void onCurrentSecond(@NonNull YouTubePlayer youTubePlayer, float second) {
-                    updateActiveSubtitle(second);
-                }
-
-                @Override
-                public void onError(@NonNull YouTubePlayer youTubePlayer, @NonNull com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants.PlayerError error) {
-                    showError("YouTube Player Error: " + error.name() + " (Video may be restricted or unavailable).");
-                }
-            });
-        }
 
         EditText etVideoLink = findViewById(R.id.etVideoLink);
         View btnLoad = findViewById(R.id.btnLoad);
@@ -97,9 +73,6 @@ public class MainActivity extends AppCompatActivity {
                     String extractedId = extractVideoId(input);
                     if (extractedId != null) {
                         currentVideoId = extractedId;
-                        if (activeYouTubePlayer != null) {
-                            activeYouTubePlayer.loadVideo(currentVideoId, 0);
-                        }
                         fetchTranscripts();
                     } else {
                         Toast.makeText(MainActivity.this, "Invalid YouTube link or ID", Toast.LENGTH_SHORT).show();
@@ -110,37 +83,13 @@ public class MainActivity extends AppCompatActivity {
             });
         }
 
-        fetchTranscripts();
-    }
-
-    private void updateActiveSubtitle(float currentSecond) {
-        if (subtitleList.isEmpty()) return;
-
-        int newActiveIndex = -1;
-        for (int i = 0; i < subtitleList.size(); i++) {
-            Subtitle s = subtitleList.get(i);
-            if (currentSecond >= s.getStart() && currentSecond <= (s.getStart() + s.getDur())) {
-                newActiveIndex = i;
-                break;
+        // Try to load cached transcript instead of making an API call
+        if (!loadTranscriptCache()) {
+            // No cache — show placeholder, don't waste an API call
+            if (tvError != null) {
+                tvError.setText("Enter a YouTube link to load transcripts.");
+                tvError.setVisibility(View.VISIBLE);
             }
-        }
-        
-        // Fallback to the closest past subtitle if we are in a gap
-        if (newActiveIndex == -1) {
-            for (int i = subtitleList.size() - 1; i >= 0; i--) {
-                Subtitle s = subtitleList.get(i);
-                if (currentSecond >= s.getStart()) {
-                    newActiveIndex = i;
-                    break;
-                }
-            }
-        }
-
-        if (newActiveIndex != -1) {
-            adapter.setActiveIndex(newActiveIndex);
-            // In a real app we might only auto-scroll if user hasn't touched the screen,
-            // but for this task we smooth scroll to it automatically like Spotify lyrics
-            recyclerView.smoothScrollToPosition(newActiveIndex);
         }
     }
 
@@ -219,6 +168,9 @@ public class MainActivity extends AppCompatActivity {
                         parsedSubtitles.add(new Subtitle(text, start, dur));
                     }
 
+                    // Cache the successful response for next startup
+                    saveTranscriptCache(responseStr);
+
                     runOnUiThread(() -> {
                         progressBar.setVisibility(View.GONE);
                         subtitleList.clear();
@@ -240,6 +192,56 @@ public class MainActivity extends AppCompatActivity {
                 showError("An unexpected error occurred.");
             }
         });
+    }
+
+    private void saveTranscriptCache(String jsonResponse) {
+        try {
+            FileOutputStream fos = openFileOutput(CACHE_FILE_NAME, MODE_PRIVATE);
+            fos.write(jsonResponse.getBytes());
+            fos.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private boolean loadTranscriptCache() {
+        try {
+            FileInputStream fis = openFileInput(CACHE_FILE_NAME);
+            InputStreamReader isr = new InputStreamReader(fis);
+            BufferedReader bufferedReader = new BufferedReader(isr);
+            StringBuilder sb = new StringBuilder();
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                sb.append(line);
+            }
+            fis.close();
+
+            String cachedJson = sb.toString();
+            if (cachedJson.isEmpty()) return false;
+
+            JSONArray jsonArray = new JSONArray(cachedJson);
+            if (jsonArray.length() > 0) {
+                JSONObject videoObj = jsonArray.getJSONObject(0);
+                JSONArray transArray = videoObj.getJSONArray("transcription");
+
+                List<Subtitle> parsedSubtitles = new ArrayList<>();
+                for (int i = 0; i < transArray.length(); i++) {
+                    JSONObject subObj = transArray.getJSONObject(i);
+                    String text = android.text.Html.fromHtml(subObj.getString("subtitle"), android.text.Html.FROM_HTML_MODE_LEGACY).toString();
+                    double start = subObj.getDouble("start");
+                    double dur = subObj.getDouble("dur");
+                    parsedSubtitles.add(new Subtitle(text, start, dur));
+                }
+
+                subtitleList.clear();
+                subtitleList.addAll(parsedSubtitles);
+                adapter.notifyDataSetChanged();
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     private void showError(String message) {
@@ -277,11 +279,5 @@ public class MainActivity extends AppCompatActivity {
         return null;
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (youTubePlayerView != null) {
-            youTubePlayerView.release();
-        }
-    }
+
 }

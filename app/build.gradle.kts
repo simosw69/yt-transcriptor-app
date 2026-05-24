@@ -50,7 +50,6 @@ dependencies {
 
     implementation(libs.appcompat)
     implementation(libs.material)
-    implementation("com.pierfrancescosoffritti.androidyoutubeplayer:core:12.1.0")
     implementation(libs.activity)
     implementation(libs.constraintlayout)
     testImplementation(libs.junit)

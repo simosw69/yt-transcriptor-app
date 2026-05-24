@@ -14,7 +14,6 @@ import java.util.List;
 public class SubtitleAdapter extends RecyclerView.Adapter<SubtitleAdapter.ViewHolder> {
 
     private List<Subtitle> subtitles;
-    private int activeIndex = -1;
 
     public SubtitleAdapter(List<Subtitle> subtitles) {
         this.subtitles = subtitles;
@@ -25,18 +24,6 @@ public class SubtitleAdapter extends RecyclerView.Adapter<SubtitleAdapter.ViewHo
         notifyDataSetChanged();
     }
 
-    public void setActiveIndex(int index) {
-        if (this.activeIndex != index) {
-            int oldIndex = this.activeIndex;
-            this.activeIndex = index;
-            if (oldIndex != -1) {
-                notifyItemChanged(oldIndex);
-            }
-            if (this.activeIndex != -1) {
-                notifyItemChanged(this.activeIndex);
-            }
-        }
-    }
 
     @NonNull
     @Override
@@ -50,14 +37,8 @@ public class SubtitleAdapter extends RecyclerView.Adapter<SubtitleAdapter.ViewHo
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Subtitle subtitle = subtitles.get(position);
         holder.tvSubtitle.setText(subtitle.getSubtitle());
-
-        if (position == activeIndex) {
-            holder.tvSubtitle.setTextColor(Color.WHITE);
-            holder.tvSubtitle.setTextSize(24);
-        } else {
-            holder.tvSubtitle.setTextColor(Color.parseColor("#888888"));
-            holder.tvSubtitle.setTextSize(20);
-        }
+        holder.tvSubtitle.setTextColor(Color.WHITE);
+        holder.tvSubtitle.setTextSize(20);
     }
 
     @Override
