@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
@@ -10,7 +9,7 @@
 
     <TextView
         android:id="@+id/tvTitle"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Transcript"
         android:textSize="24sp"
@@ -19,78 +18,67 @@
         android:padding="16dp"
         android:background="#1E1E1E"
         android:gravity="center"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:layout_alignParentTop="true" />
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/tilVideoLink"
-        android:layout_width="0dp"
+    <LinearLayout
+        android:id="@+id/inputContainer"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:orientation="horizontal"
+        android:layout_below="@id/tvTitle"
         android:layout_marginTop="12dp"
-        android:layout_marginEnd="8dp"
-        android:textColorHint="#888888"
-        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-        app:layout_constraintTop_toBottomOf="@id/tvTitle"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/btnLoad">
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:gravity="center_vertical">
 
-        <com.google.android.material.textfield.TextInputEditText
+        <EditText
             android:id="@+id/etVideoLink"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:hint="YouTube link or Video ID"
+            android:textColorHint="#888888"
             android:textColor="#FFFFFF"
             android:inputType="textUri"
-            android:maxLines="1" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:maxLines="1"
+            android:padding="12dp"
+            android:background="#333333"
+            android:layout_marginEnd="8dp" />
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnLoad"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:text="Load"
-        android:textColor="#FFFFFF"
-        app:backgroundTint="#FF3333"
-        app:layout_constraintTop_toTopOf="@id/tilVideoLink"
-        app:layout_constraintBottom_toBottomOf="@id/tilVideoLink"
-        app:layout_constraintEnd_toEndOf="parent" />
+        <Button
+            android:id="@+id/btnLoad"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Load"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#FF3333" />
+
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/inputContainer"
+        android:layout_marginTop="8dp"
+        android:clipToPadding="false"
+        android:paddingBottom="20dp" />
 
     <ProgressBar
         android:id="@+id/progressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:clipToPadding="false"
-        android:paddingBottom="20dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@id/tilVideoLink"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:layout_centerInParent="true" />
 
     <TextView
         android:id="@+id/tvError"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
         android:textColor="#FF6B6B"
         android:textSize="16sp"
         android:gravity="center"
         android:padding="24dp"
-        android:visibility="gone"
-        app:layout_constraintTop_toTopOf="@id/recyclerView"
-        app:layout_constraintBottom_toBottomOf="@id/recyclerView"
-        app:layout_constraintStart_toStartOf="@id/recyclerView"
-        app:layout_constraintEnd_toEndOf="@id/recyclerView" />
+        android:visibility="gone" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</RelativeLayout>
