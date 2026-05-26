@@ -1,12 +1,16 @@
 package com.example.yt_transcriptor_app;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -14,13 +18,12 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -29,6 +32,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener;
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -40,15 +47,21 @@ public class MainActivity extends AppCompatActivity {
     private SubtitleAdapter adapter;
     private List<Subtitle> subtitleList = new ArrayList<>();
 
+    // YouTube Player fields
+    private YouTubePlayerView youtubePlayerView;
+    private YouTubePlayer youtubePlayer = null;
+    private boolean isPlayerReady = false;
+    private float lastPlaybackTime = 0f;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
-        View mainView = findViewById(R.id.main);
-        if (mainView != null) {
-            ViewCompat.setOnApplyWindowInsetsListener(mainView, (v, insets) -> {
+        View rootContainer = findViewById(R.id.rootContainer);
+        if (rootContainer != null) {
+            ViewCompat.setOnApplyWindowInsetsListener(rootContainer, (v, insets) -> {
                 Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
                 v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
                 return insets;
@@ -63,6 +76,32 @@ public class MainActivity extends AppCompatActivity {
         adapter = new SubtitleAdapter(subtitleList);
         recyclerView.setAdapter(adapter);
 
+        // Initialize YouTube Player
+        youtubePlayerView = findViewById(R.id.youtubePlayerView);
+        getLifecycle().addObserver(youtubePlayerView);
+        youtubePlayerView.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
+            @Override
+            public void onReady(@NonNull YouTubePlayer player) {
+                youtubePlayer = player;
+                isPlayerReady = true;
+                if (currentVideoId != null) {
+                    youtubePlayer.cueVideo(currentVideoId, lastPlaybackTime);
+                    // Pause if we are in portrait mode by default
+                    if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+                        youtubePlayer.pause();
+                    }
+                }
+            }
+
+            @Override
+            public void onCurrentSecond(@NonNull YouTubePlayer player, float second) {
+                lastPlaybackTime = second;
+                syncSubtitles(second);
+            }
+        });
+
+        // Setup layouts according to the current orientation on start
+        updateLayoutForOrientation(getResources().getConfiguration().orientation);
 
         EditText etVideoLink = findViewById(R.id.etVideoLink);
         View btnLoad = findViewById(R.id.btnLoad);
@@ -93,6 +132,113 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void syncSubtitles(float currentTime) {
+        if (subtitleList == null || subtitleList.isEmpty()) return;
+
+        int activeIndex = -1;
+        for (int i = 0; i < subtitleList.size(); i++) {
+            Subtitle sub = subtitleList.get(i);
+            if (currentTime >= sub.getStart()) {
+                activeIndex = i;
+            } else {
+                break;
+            }
+        }
+
+        if (activeIndex != -1 && activeIndex != adapter.getActiveIndex()) {
+            final int targetIndex = activeIndex;
+            runOnUiThread(() -> {
+                adapter.setActiveIndex(targetIndex);
+                smoothScrollToPositionCentered(recyclerView, targetIndex);
+            });
+        }
+    }
+
+    private void smoothScrollToPositionCentered(RecyclerView recyclerView, int position) {
+        if (recyclerView == null || recyclerView.getLayoutManager() == null) return;
+        androidx.recyclerview.widget.LinearSmoothScroller smoothScroller = 
+                new androidx.recyclerview.widget.LinearSmoothScroller(recyclerView.getContext()) {
+            @Override
+            protected int getVerticalSnapPreference() {
+                return androidx.recyclerview.widget.LinearSmoothScroller.SNAP_TO_START;
+            }
+
+            @Override
+            public int calculateDtToFit(int viewStart, int viewEnd, int boxStart, int boxEnd, int snapPreference) {
+                return (boxStart + (boxEnd - boxStart) / 2) - (viewStart + (viewEnd - viewStart) / 2);
+            }
+        };
+        smoothScroller.setTargetPosition(position);
+        recyclerView.getLayoutManager().startSmoothScroll(smoothScroller);
+    }
+
+    @Override
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        updateLayoutForOrientation(newConfig.orientation);
+    }
+
+    private void updateLayoutForOrientation(int orientation) {
+        LinearLayout rootContainer = findViewById(R.id.rootContainer);
+        View tvTitle = findViewById(R.id.tvTitle);
+        View inputContainer = findViewById(R.id.inputContainer);
+        View listContainer = findViewById(R.id.listContainer);
+
+        if (rootContainer == null || youtubePlayerView == null || listContainer == null) return;
+
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            // Landscape: Horizontal split
+            rootContainer.setOrientation(LinearLayout.HORIZONTAL);
+
+            if (tvTitle != null) tvTitle.setVisibility(View.GONE);
+            if (inputContainer != null) inputContainer.setVisibility(View.GONE);
+
+            // Make player visible in landscape
+            youtubePlayerView.setVisibility(View.VISIBLE);
+
+            LinearLayout.LayoutParams playerParams = new LinearLayout.LayoutParams(
+                    0,
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    1.2f
+            );
+            playerParams.gravity = android.view.Gravity.CENTER_VERTICAL;
+            youtubePlayerView.setLayoutParams(playerParams);
+
+            LinearLayout.LayoutParams listParams = new LinearLayout.LayoutParams(
+                    0,
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    1.0f
+            );
+            listContainer.setLayoutParams(listParams);
+
+            // Automatically start/resume playback if rotation happens and video is loaded
+            if (youtubePlayer != null && currentVideoId != null) {
+                youtubePlayer.play();
+            }
+        } else {
+            // Portrait: Vertical layout
+            rootContainer.setOrientation(LinearLayout.VERTICAL);
+
+            if (tvTitle != null) tvTitle.setVisibility(View.VISIBLE);
+            if (inputContainer != null) inputContainer.setVisibility(View.VISIBLE);
+
+            // Hide player in portrait
+            youtubePlayerView.setVisibility(View.GONE);
+
+            LinearLayout.LayoutParams listParams = new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    0,
+                    1.0f
+            );
+            listContainer.setLayoutParams(listParams);
+
+            // Pause playback in portrait mode to allow simple scrolling
+            if (youtubePlayer != null) {
+                youtubePlayer.pause();
+            }
+        }
+    }
+
     private void fetchTranscripts() {
         runOnUiThread(() -> {
             progressBar.setVisibility(View.VISIBLE);
@@ -110,7 +256,7 @@ public class MainActivity extends AppCompatActivity {
                 conn.setRequestProperty("Content-Type", "application/json");
 
                 int status = conn.getResponseCode();
-                
+
                 if (status == 403 || status == 401) {
                     showError("API Error: Expired key or invalid subscription.");
                     return;
@@ -135,7 +281,7 @@ public class MainActivity extends AppCompatActivity {
                 reader.close();
 
                 String responseStr = response.toString();
-                
+
                 // Se la risposta è un JSON object (es. {"message": "..."} o {"error": "..."}), estraiamo il messaggio d'errore.
                 if (responseStr.trim().startsWith("{")) {
                     org.json.JSONObject errorObj = new org.json.JSONObject(responseStr);
@@ -157,7 +303,7 @@ public class MainActivity extends AppCompatActivity {
                 if (jsonArray.length() > 0) {
                     org.json.JSONObject videoObj = jsonArray.getJSONObject(0);
                     org.json.JSONArray transArray = videoObj.getJSONArray("transcription");
-                    
+
                     List<Subtitle> parsedSubtitles = new ArrayList<>();
                     for (int i = 0; i < transArray.length(); i++) {
                         org.json.JSONObject subObj = transArray.getJSONObject(i);
@@ -176,6 +322,14 @@ public class MainActivity extends AppCompatActivity {
                         subtitleList.clear();
                         subtitleList.addAll(parsedSubtitles);
                         adapter.notifyDataSetChanged();
+
+                        // Start playing the video in player if ready
+                        if (isPlayerReady && youtubePlayer != null && currentVideoId != null) {
+                            youtubePlayer.loadVideo(currentVideoId, 0f);
+                            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+                                youtubePlayer.pause();
+                            }
+                        }
                     });
                 } else {
                     showError("No transcripts found for this video.");
@@ -199,6 +353,12 @@ public class MainActivity extends AppCompatActivity {
             FileOutputStream fos = openFileOutput(CACHE_FILE_NAME, MODE_PRIVATE);
             fos.write(jsonResponse.getBytes());
             fos.close();
+
+            // Also save video ID in SharedPreferences
+            getSharedPreferences("app_prefs", MODE_PRIVATE)
+                    .edit()
+                    .putString("last_video_id", currentVideoId)
+                    .apply();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -206,6 +366,10 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean loadTranscriptCache() {
         try {
+            // Restore last video ID from preference
+            currentVideoId = getSharedPreferences("app_prefs", MODE_PRIVATE)
+                    .getString("last_video_id", null);
+
             FileInputStream fis = openFileInput(CACHE_FILE_NAME);
             InputStreamReader isr = new InputStreamReader(fis);
             BufferedReader bufferedReader = new BufferedReader(isr);
@@ -236,6 +400,14 @@ public class MainActivity extends AppCompatActivity {
                 subtitleList.clear();
                 subtitleList.addAll(parsedSubtitles);
                 adapter.notifyDataSetChanged();
+
+                // If player is ready, cue the video at time 0
+                if (isPlayerReady && youtubePlayer != null && currentVideoId != null) {
+                    youtubePlayer.cueVideo(currentVideoId, 0f);
+                    if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+                        youtubePlayer.pause();
+                    }
+                }
                 return true;
             }
         } catch (Exception e) {
@@ -262,12 +434,12 @@ public class MainActivity extends AppCompatActivity {
             return null;
         }
         input = input.trim();
-        
+
         // If it's already a valid 11-char ID
         if (input.matches("^[a-zA-Z0-9_-]{11}$")) {
             return input;
         }
-        
+
         // Regex pattern to extract video ID from YouTube URLs
         String regex = "^(?:https?:\\/\\/)?(?:www\\.|m\\.)?(?:youtube\\.com\\/(?:watch\\?(?:.*&)?v=|embed\\/|v\\/|shorts\\/)|youtu\\.be\\/)([a-zA-Z0-9_-]{11})";
         java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(regex, java.util.regex.Pattern.CASE_INSENSITIVE);
@@ -275,9 +447,7 @@ public class MainActivity extends AppCompatActivity {
         if (matcher.find()) {
             return matcher.group(1);
         }
-        
+
         return null;
     }
-
-
 }

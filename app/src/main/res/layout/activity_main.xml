@@ -1,84 +1,110 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+    android:id="@+id/rootContainer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:background="#121212"
     tools:context=".MainActivity">
 
+    <!-- Sleek Header -->
     <TextView
         android:id="@+id/tvTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Transcript"
-        android:textSize="24sp"
+        android:text="YouTube Transcriptor"
+        android:textSize="22sp"
         android:textStyle="bold"
         android:textColor="#FFFFFF"
         android:padding="16dp"
-        android:background="#1E1E1E"
+        android:background="#1A1A1A"
         android:gravity="center"
-        android:layout_alignParentTop="true" />
+        android:elevation="4dp" />
 
+    <!-- Input Section -->
     <LinearLayout
         android:id="@+id/inputContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_below="@id/tvTitle"
-        android:layout_marginTop="12dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
+        android:padding="16dp"
+        android:background="#161616"
         android:gravity="center_vertical">
 
         <EditText
             android:id="@+id/etVideoLink"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:layout_weight="1"
-            android:hint="YouTube link or Video ID"
-            android:textColorHint="#888888"
+            android:hint="YouTube Link or Video ID"
+            android:textColorHint="#666666"
             android:textColor="#FFFFFF"
             android:inputType="textUri"
             android:maxLines="1"
-            android:padding="12dp"
-            android:background="#333333"
-            android:layout_marginEnd="8dp" />
+            android:paddingHorizontal="16dp"
+            android:background="@drawable/bg_edit_text"
+            android:layout_marginEnd="12dp"
+            android:textSize="15sp"
+            android:textCursorDrawable="@null"/>
 
         <Button
             android:id="@+id/btnLoad"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Load"
+            android:layout_height="48dp"
+            android:text="LOAD"
             android:textColor="#FFFFFF"
-            android:backgroundTint="#FF3333" />
+            android:textStyle="bold"
+            android:textSize="14sp"
+            android:backgroundTint="#FF2A2A"
+            android:insetTop="0dp"
+            android:insetBottom="0dp" />
 
     </LinearLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/inputContainer"
-        android:layout_marginTop="8dp"
-        android:clipToPadding="false"
-        android:paddingBottom="20dp" />
-
-    <ProgressBar
-        android:id="@+id/progressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true" />
-
-    <TextView
-        android:id="@+id/tvError"
+    <!-- YouTube Player View (Hidden by default in portrait, shown on rotation or load) -->
+    <com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
+        android:id="@+id/youtubePlayerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:textColor="#FF6B6B"
-        android:textSize="16sp"
-        android:gravity="center"
-        android:padding="24dp"
         android:visibility="gone" />
 
-</RelativeLayout>
+    <!-- Subtitles and Loaders Container -->
+    <FrameLayout
+        android:id="@+id/listContainer"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="#121212">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingVertical="24dp"
+            android:scrollbarStyle="outsideOverlay"
+            android:scrollbars="vertical" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center"
+            android:indeterminateTint="#FF2A2A"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tvError"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textColor="#FF5252"
+            android:textSize="16sp"
+            android:gravity="center"
+            android:padding="24dp"
+            android:visibility="gone" />
+
+    </FrameLayout>
+
+</LinearLayout>
