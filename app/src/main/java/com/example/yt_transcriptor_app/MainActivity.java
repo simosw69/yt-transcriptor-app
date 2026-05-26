@@ -47,7 +47,6 @@ public class MainActivity extends AppCompatActivity {
     private SubtitleAdapter adapter;
     private List<Subtitle> subtitleList = new ArrayList<>();
 
-    // YouTube Player fields
     private YouTubePlayerView youtubePlayerView;
     private YouTubePlayer youtubePlayer = null;
     private boolean isPlayerReady = false;
@@ -76,7 +75,6 @@ public class MainActivity extends AppCompatActivity {
         adapter = new SubtitleAdapter(subtitleList);
         recyclerView.setAdapter(adapter);
 
-        // Initialize YouTube Player
         youtubePlayerView = findViewById(R.id.youtubePlayerView);
         getLifecycle().addObserver(youtubePlayerView);
         youtubePlayerView.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
@@ -86,7 +84,6 @@ public class MainActivity extends AppCompatActivity {
                 isPlayerReady = true;
                 if (currentVideoId != null) {
                     youtubePlayer.cueVideo(currentVideoId, lastPlaybackTime);
-                    // Pause if we are in portrait mode by default
                     if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
                         youtubePlayer.pause();
                     }
@@ -100,7 +97,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // Setup layouts according to the current orientation on start
         updateLayoutForOrientation(getResources().getConfiguration().orientation);
 
         EditText etVideoLink = findViewById(R.id.etVideoLink);
@@ -122,9 +118,7 @@ public class MainActivity extends AppCompatActivity {
             });
         }
 
-        // Try to load cached transcript instead of making an API call
         if (!loadTranscriptCache()) {
-            // No cache — show placeholder, don't waste an API call
             if (tvError != null) {
                 tvError.setText("Enter a YouTube link to load transcripts.");
                 tvError.setVisibility(View.VISIBLE);
@@ -187,13 +181,11 @@ public class MainActivity extends AppCompatActivity {
         if (rootContainer == null || youtubePlayerView == null || listContainer == null) return;
 
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            // Landscape: Horizontal split
             rootContainer.setOrientation(LinearLayout.HORIZONTAL);
 
             if (tvTitle != null) tvTitle.setVisibility(View.GONE);
             if (inputContainer != null) inputContainer.setVisibility(View.GONE);
 
-            // Make player visible in landscape
             youtubePlayerView.setVisibility(View.VISIBLE);
 
             LinearLayout.LayoutParams playerParams = new LinearLayout.LayoutParams(
@@ -211,18 +203,15 @@ public class MainActivity extends AppCompatActivity {
             );
             listContainer.setLayoutParams(listParams);
 
-            // Automatically start/resume playback if rotation happens and video is loaded
             if (youtubePlayer != null && currentVideoId != null) {
                 youtubePlayer.play();
             }
         } else {
-            // Portrait: Vertical layout
             rootContainer.setOrientation(LinearLayout.VERTICAL);
 
             if (tvTitle != null) tvTitle.setVisibility(View.VISIBLE);
             if (inputContainer != null) inputContainer.setVisibility(View.VISIBLE);
 
-            // Hide player in portrait
             youtubePlayerView.setVisibility(View.GONE);
 
             LinearLayout.LayoutParams listParams = new LinearLayout.LayoutParams(
@@ -232,7 +221,6 @@ public class MainActivity extends AppCompatActivity {
             );
             listContainer.setLayoutParams(listParams);
 
-            // Pause playback in portrait mode to allow simple scrolling
             if (youtubePlayer != null) {
                 youtubePlayer.pause();
             }
@@ -282,7 +270,6 @@ public class MainActivity extends AppCompatActivity {
 
                 String responseStr = response.toString();
 
-                // Se la risposta è un JSON object (es. {"message": "..."} o {"error": "..."}), estraiamo il messaggio d'errore.
                 if (responseStr.trim().startsWith("{")) {
                     org.json.JSONObject errorObj = new org.json.JSONObject(responseStr);
                     String apiMessage = errorObj.optString("message", null);
@@ -293,7 +280,7 @@ public class MainActivity extends AppCompatActivity {
                         apiMessage = errorObj.optString("detail", null);
                     }
                     if (apiMessage == null || apiMessage.isEmpty()) {
-                        apiMessage = responseStr; // Fallback: mostra tutto il JSON
+                        apiMessage = responseStr;
                     }
                     showError("API Error: " + apiMessage);
                     return;
@@ -307,14 +294,12 @@ public class MainActivity extends AppCompatActivity {
                     List<Subtitle> parsedSubtitles = new ArrayList<>();
                     for (int i = 0; i < transArray.length(); i++) {
                         org.json.JSONObject subObj = transArray.getJSONObject(i);
-                        // Convert HTML entities like &#39; inside the subtitle
                         String text = android.text.Html.fromHtml(subObj.getString("subtitle"), android.text.Html.FROM_HTML_MODE_LEGACY).toString();
                         double start = subObj.getDouble("start");
                         double dur = subObj.getDouble("dur");
                         parsedSubtitles.add(new Subtitle(text, start, dur));
                     }
 
-                    // Cache the successful response for next startup
                     saveTranscriptCache(responseStr);
 
                     runOnUiThread(() -> {
@@ -323,7 +308,6 @@ public class MainActivity extends AppCompatActivity {
                         subtitleList.addAll(parsedSubtitles);
                         adapter.notifyDataSetChanged();
 
-                        // Start playing the video in player if ready
                         if (isPlayerReady && youtubePlayer != null && currentVideoId != null) {
                             youtubePlayer.loadVideo(currentVideoId, 0f);
                             if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
@@ -354,7 +338,6 @@ public class MainActivity extends AppCompatActivity {
             fos.write(jsonResponse.getBytes());
             fos.close();
 
-            // Also save video ID in SharedPreferences
             getSharedPreferences("app_prefs", MODE_PRIVATE)
                     .edit()
                     .putString("last_video_id", currentVideoId)
@@ -366,7 +349,6 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean loadTranscriptCache() {
         try {
-            // Restore last video ID from preference
             currentVideoId = getSharedPreferences("app_prefs", MODE_PRIVATE)
                     .getString("last_video_id", null);
 
@@ -401,7 +383,6 @@ public class MainActivity extends AppCompatActivity {
                 subtitleList.addAll(parsedSubtitles);
                 adapter.notifyDataSetChanged();
 
-                // If player is ready, cue the video at time 0
                 if (isPlayerReady && youtubePlayer != null && currentVideoId != null) {
                     youtubePlayer.cueVideo(currentVideoId, 0f);
                     if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
@@ -435,12 +416,10 @@ public class MainActivity extends AppCompatActivity {
         }
         input = input.trim();
 
-        // If it's already a valid 11-char ID
         if (input.matches("^[a-zA-Z0-9_-]{11}$")) {
             return input;
         }
 
-        // Regex pattern to extract video ID from YouTube URLs
         String regex = "^(?:https?:\\/\\/)?(?:www\\.|m\\.)?(?:youtube\\.com\\/(?:watch\\?(?:.*&)?v=|embed\\/|v\\/|shorts\\/)|youtu\\.be\\/)([a-zA-Z0-9_-]{11})";
         java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(regex, java.util.regex.Pattern.CASE_INSENSITIVE);
         java.util.regex.Matcher matcher = pattern.matcher(input);

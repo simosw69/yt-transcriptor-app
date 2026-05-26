@@ -22,7 +22,7 @@ public class SubtitleAdapter extends RecyclerView.Adapter<SubtitleAdapter.ViewHo
 
     public void updateData(List<Subtitle> subtitles) {
         this.subtitles = subtitles;
-        this.activeIndex = -1; // Reset active index
+        this.activeIndex = -1;
         notifyDataSetChanged();
     }
 
@@ -59,13 +59,11 @@ public class SubtitleAdapter extends RecyclerView.Adapter<SubtitleAdapter.ViewHo
         holder.tvSubtitle.setText(subtitle.getSubtitle());
         
         if (position == activeIndex) {
-            // Highlighted active subtitle: Full opacity, bright white, larger size
             holder.tvSubtitle.setTextColor(Color.WHITE);
             holder.tvSubtitle.setTextSize(22);
             holder.tvSubtitle.setAlpha(1.0f);
         } else {
-            // Inactive subtitles: Dimmed, smaller size
-            holder.tvSubtitle.setTextColor(Color.parseColor("#B3FFFFFF")); // 70% opacity white
+            holder.tvSubtitle.setTextColor(Color.parseColor("#B3FFFFFF"));
             holder.tvSubtitle.setTextSize(18);
             holder.tvSubtitle.setAlpha(0.4f);
         }

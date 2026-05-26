@@ -8,7 +8,6 @@
     android:background="#121212"
     tools:context=".MainActivity">
 
-    <!-- Sleek Header -->
     <TextView
         android:id="@+id/tvTitle"
         android:layout_width="match_parent"
@@ -22,7 +21,6 @@
         android:gravity="center"
         android:elevation="4dp" />
 
-    <!-- Input Section -->
     <LinearLayout
         android:id="@+id/inputContainer"
         android:layout_width="match_parent"
@@ -62,14 +60,12 @@
 
     </LinearLayout>
 
-    <!-- YouTube Player View (Hidden by default in portrait, shown on rotation or load) -->
     <com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
         android:id="@+id/youtubePlayerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone" />
 
-    <!-- Subtitles and Loaders Container -->
     <FrameLayout
         android:id="@+id/listContainer"
         android:layout_width="match_parent"
